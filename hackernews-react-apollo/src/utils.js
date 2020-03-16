@@ -2,7 +2,7 @@ function timeDifference(current, previous) {
     const milliSecondsPerMinute = 60 * 1000;
     const milliSecondsPerHour = milliSecondsPerMinute * 60;
     const milliSecondsPerDay = milliSecondsPerHour * 24;
-    const milliSecondsPerMonth = miliSecondsPerDay * 30;
+    const milliSecondsPerMonth = milliSecondsPerDay * 30;
     const millieSecondsPerYear = milliSecondsPerDay * 365;
 
     const elapsed = current - previous;
