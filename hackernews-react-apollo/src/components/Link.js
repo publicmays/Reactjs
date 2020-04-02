@@ -4,6 +4,7 @@ import { timeDifferenceForDate } from '../utils'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
+
 const VOTE_MUTATION = gql`
   mutation VoteMutation($linkId: ID!) {
     vote(linkId: $linkId) {
@@ -36,7 +37,7 @@ class Link extends Component {
               mutation={VOTE_MUTATION}
               variables={{ linkId: this.props.link.id }}
               update={(store, {data: {vote}}) =>
-                this.props.updateStoreAfterVote(store, vote, this.props.link.id);
+                this.props.updateStoreAfterVote(store, vote, this.props.link.id)
               }
             >
               {voteMutation => (
