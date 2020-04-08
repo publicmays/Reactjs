@@ -73,11 +73,15 @@ Function Component
 
 # Updating State
 
+Class
+
 ```ts
   <button onClick={() => this.setState({ count: this.state.count + 1 })}>
     Click me
   </button>
 ```
+
+Function Component
 
 ```ts
   <button onClick={() => setCount(count+1)}>
