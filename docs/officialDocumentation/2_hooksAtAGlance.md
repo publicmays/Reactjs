@@ -122,3 +122,21 @@ if (functions.name.startsWith('use') and calls other Hooks)
 ```
 
 # Other Hooks
+
+* `useContext` subscribes to React context without using nesting
+
+```ts
+function Example() {
+  const locale = useContext(LocaleContext);
+  const theme = useContext(ThemeContext);
+  // ...
+}
+```
+
+* `useReducer` manages local state of complex components with a reducer
+
+```ts
+function Todos() {
+  const [todos, dispatch] = useReducer(todosReducer);
+  // ...
+```
