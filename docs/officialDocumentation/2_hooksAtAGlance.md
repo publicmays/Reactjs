@@ -26,3 +26,62 @@ function Example() {
     </div>
   );
 ```
+
+* Effects can specify how to clean up after them by returning a function
+* unsubscribes from `ChatAPI` when component unmounts
+
+```ts
+import React, { useState, useEffect } from 'react';
+
+function FriendStatus(props) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+## Rules of Hooks
+1. Only call Hooks at the top level, not inside loops, conditions, or nested functions.
+
+1. Only call Hooks from React function components not regular Javascript functions.
+
+# Building your own Hooks
+
+* reuse stateful logic between components
+* `higher-order components` + `render props` functionality = `hooks` functionality without adding more components
+* custom hook `useFriendStatus`
+
+```ts
+import React, { useState, useEffect } from 'react';
+
+function useFriendStatus(friendID) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange);
+    };
+  });
+
+  return isOnline;
+}
+```
