@@ -85,3 +85,40 @@ function useFriendStatus(friendID) {
   return isOnline;
 }
 ```
+
+* now we can use it from both components
+* state is independent
+* hooks can reuse _stateful logic_
+* each call to a hook is in an isolated state
+* can use same custom hook twice in a component
+
+```ts
+function FriendStatus(props) {
+  const isOnline = useFriendStatus(props.friend.id);
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+```ts
+function FriendListItem(props) {
+  const isOnline = useFriendStatus(props.friend.id);
+
+  return (
+    <li style={{ color: isOnline ? 'green' : 'black' }}>
+      {props.friend.name}
+    </li>
+  );
+}
+```
+
+```ts
+// Best Practice
+if (functions.name.startsWith('use') and calls other Hooks)
+    function == customHook
+```
+
+# Other Hooks
