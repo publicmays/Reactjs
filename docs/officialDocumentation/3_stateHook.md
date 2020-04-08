@@ -103,6 +103,6 @@ Equivalent to:
 
 ```ts
 var fruitStateVariable = useState('banana'); // Returns a pair
-  var fruit = fruitStateVariable[0]; // First item in a pair
-  var setFruit = fruitStateVariable[1]; // Second item in a pair
+var fruit = fruitStateVariable[0]; // First item in a pair
+var setFruit = fruitStateVariable[1]; // Second item in a pair
 ```
