@@ -143,3 +143,136 @@ function FriendStatus(props) {
   return isOnline ? 'Online' : 'Offline';
 }
 ```
+
+# Why did we return a function from our effect? 
+* Every effect may return a function that cleans up after it.
+
+# When exactly does React clean up an effect? 
+* performs cleanup when component unmounts
+* also cleans up effects from previous render before running hte effects next time.
+
+# Tip: Use Multiple Effects to Separate Concerns
+
+Class
+
+```ts
+class FriendStatusWithCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0, isOnline: null };
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+  }
+
+  componentDidMount() {
+    document.title = `You clicked ${this.state.count} times`;
+    ChatAPI.subscribeToFriendStatus(
+      this.props.friend.id,
+      this.handleStatusChange
+    );
+  }
+
+  componentDidUpdate() {
+    document.title = `You clicked ${this.state.count} times`;
+  }
+
+  componentWillUnmount() {
+    ChatAPI.unsubscribeFromFriendStatus(
+      this.props.friend.id,
+      this.handleStatusChange
+    );
+  }
+
+  handleStatusChange(status) {
+    this.setState({
+      isOnline: status.isOnline
+    });
+  }
+  // ...
+```
+
+Function Component
+
+```ts
+function FriendStatusWithCounter(props) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+
+  const [isOnline, setIsOnline] = useState(null);
+  useEffect(() => {
+    function handleStatusChange(status) {
+      setIsOnline(status.isOnline);
+    }
+
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+  // ...
+}
+```
+
+Example of subscribe calls
+
+```ts
+// Mount with { friend: { id: 100 } } props
+ChatAPI.subscribeToFriendStatus(100, handleStatusChange);     // Run first effect
+
+// Update with { friend: { id: 200 } } props
+ChatAPI.unsubscribeFromFriendStatus(100, handleStatusChange); // Clean up previous effect
+ChatAPI.subscribeToFriendStatus(200, handleStatusChange);     // Run next effect
+
+// Update with { friend: { id: 300 } } props
+ChatAPI.unsubscribeFromFriendStatus(200, handleStatusChange); // Clean up previous effect
+ChatAPI.subscribeToFriendStatus(300, handleStatusChange);     // Run next effect
+
+// Unmount
+ChatAPI.unsubscribeFromFriendStatus(300, handleStatusChange); // Clean up last effect
+```
+
+# Tip: Optimizing Performance by Skipping Effects
+* Performance Issues: cleaning up or applying the effect after every render 
+* Class components solution: extra comparison with prevProps or prevState inside `componentDidUpdate`:
+
+```ts
+componentDidUpdate(prevProps, prevState) {
+    if (prevState.count !== this.state.count) {
+        document.title = `You clicked ${this.state.count} times`;
+    }
+}
+```
+
+Function Component
+
+* Solution to skip applying an effect if certain values haven’t changed between re-renders: 
+    * pass an array as an optional second argument to `useEffect`:
+
+```ts
+useEffect(() => {
+    document.title = `You clicked ${count} times`;
+}, [count]); // Only re-run the effect if count changes.
+```
+
+* Cleanup phase ex.
+
+```ts
+useEffect(() => {
+    function handleStatusChange(status) {
+        setIsOnline(status.isOnline);
+    }
+
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+        ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+}, [props.friend.id]); // Only re-subscribe if props.friend.id changes
+```
+
+> Note
+
+* If you want to run an effect and clean it up only once (on mount and unmount),
+    * pass an empty array `([])` as a second argument.
+    * Tells React that your effect doesn’t depend on any values from props or state, so it never needs to re-run.
+
