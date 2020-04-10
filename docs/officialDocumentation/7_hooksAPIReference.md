@@ -1,4 +1,4 @@
-# [Basic Hooks](#Basic-Hooks)
+# [Basic Hooks](#basic-hooks)
 
 ## [useState](#useState)
 ## useEffect
