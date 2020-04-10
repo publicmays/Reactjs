@@ -1,7 +1,7 @@
 * [Basic Hooks](#basic-hooks)
     * [useState](#useState)
     * [useEffect](#useEffect)
-    * useContext
+    * [useContext](#useContext)
 
 * Additional Hooks
     * useReducer
@@ -87,3 +87,55 @@ const [state, setState] = useState(() => {
 * If you’re doing expensive calculations while rendering, you can optimize them with `useMemo`.
 
 # `useEffect`
+
+```ts
+useEffect(didUpdate);
+```
+
+* Mutations, subscriptions, timers, logging, and other side effects are not allowed inside the main body of a function component (referred to as React’s render phase).
+* Instead, use `useEffect`. 
+* The function passed to useEffect will run after the render is committed to the screen. 
+* Effects run after every completed render, but can choose to fire them only when certain values have changed.
+
+### Cleaning up an effect
+
+```ts
+useEffect(() => {
+    const subscription = props.source.subscribe();
+    return () => {
+        // Clean up the subscription
+        subscription.unsubscribe();
+    };
+});
+```
+
+* The clean-up function runs before the component is removed from the UI to prevent memory leaks. 
+* Additionally, if a component renders multiple times, the previous effect is cleaned up before executing the next effect. 
+* Ex. above a new subscription is created on every update.
+
+### Timing of effects
+
+* A DOM mutation that is visible to the user must fire synchronously before the next paint so that the user does not perceive a visual inconsistency. 
+* (The distinction is conceptually similar to passive versus active event listeners.) 
+* For these types of effects, React provides one additional Hook called `useLayoutEffect`[#useLayoutEffect]. It has the same signature as useEffect, and only differs in when it is fired.
+
+### Conditionally firing an effect
+
+* We don’t need to create a new subscription on every update, only if the source prop has changed.
+
+```ts
+useEffect(
+    () => {
+        const subscription = props.source.subscribe();
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [props.source]);
+```
+
+> Note:
+> If you want to run an effect and clean it up only once (on mount and unmount), you can pass an empty array (`[]`) as a second argument. This tells React that your effect doesn’t depend on any values from props or state, so it never needs to re-run.
+
+* Every value referenced inside the effect function should also appear in the dependencies array. 
+
+## `useContext`
