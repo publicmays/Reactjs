@@ -1,18 +1,16 @@
-# [Basic Hooks](#basic-hooks)
+* [Basic Hooks](#basic-hooks)
+    * [useState](#useState)
+    * [useEffect](#useEffect)
+    * useContext
 
-## [useState](#useState)
-## [useEffect](#useEffect)
-## useContext
-
-# Additional Hooks
-
-## useReducer
-## useCallback
-## useMemo
-## useRef
-## useImperativeHandle
-## useLayoutEffect
-## useDebugValue
+* Additional Hooks
+    * useReducer
+    * useCallback
+    * useMemo
+    * useRef
+    * useImperativeHandle
+    * useLayoutEffect
+    * useDebugValue
 
 # Basic Hooks
 
