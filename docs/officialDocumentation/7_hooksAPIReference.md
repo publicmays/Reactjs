@@ -3,8 +3,8 @@
     * [useEffect](#useEffect)
     * [useContext](#useContext)
 
-* Additional Hooks
-    * useReducer
+* [Additional Hooks](#additional-hooks)
+    * [useReducer](#useReducer)
     * useCallback
     * useMemo
     * useRef
@@ -202,4 +202,25 @@ function ThemedButton() {
         </button>
     );
 }
+```
+
+# Additional Hooks
+
+## `useReducer`
+
+```ts
+const [state, dispatch] = useReducer(reducer, initialArg, init);
+```
+
+* Accepts a reducer of type `(state, action) => newState)`
+* returns the current `state` paired with a `dispatch` method
+* `useReducer` is preferrable to `useState` when you have complex state logic
+    * involves multiple sub-values or
+    * when next `state` depends on previous one
+    * optimizes performance that trigger deep updates b/c you can pass `dispatch` down instead of callbacks
+
+* Ex. of `useState` rewritten to use a reducer:
+
+```ts
+
 ```
