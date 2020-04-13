@@ -222,5 +222,90 @@ const [state, dispatch] = useReducer(reducer, initialArg, init);
 * Ex. of `useState` rewritten to use a reducer:
 
 ```ts
+const initialState = {count: 0};
 
+function reducer(state, action) {
+    switch(action.type) {
+        case 'increment':
+            return {count: state.count + 1};
+        case 'decrement': 
+            return {count: state.count -1};
+        default:
+            throw new Error();
+    }
+}
+
+function Counter() {
+    const [state, dispatch] = useReducer(reducer, initialState);
+    return (
+        <>
+        Count: {state.count}
+        <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+        <button onClick={() => dispatch({type: 'increment'})}>+</button>
+        </>
+    );
+}
 ```
+
+### Specifying initial state
+
+* Simple Option: pass initial state as second argument
+
+```ts
+const [state, dispatch] = useReducer(
+    reducer,
+    {count: initialCount}
+);
+```
+
+### Lazy Initialization
+
+* Create initial state lazily
+* `init` function as 3rd argument
+* initial state will be set to `init(initialArg)`
+* extracts the logic for calculating the initial state outside the reducer
+* helps for resetting the state in a later response to an action
+
+```ts
+function init(initialCount) {
+    return {count: initialCount};
+}
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'increment':
+            return {count: state.count + 1};
+        case 'decrement':
+            return {count: state.count - 1};
+        case 'reset':
+            return init(action.payload);
+        default:
+            throw new Error();
+    }
+}
+
+function Counter({initialCount}) {
+    const [state, dispatch] = useReducer(reducer, initialCount, init);
+    return (
+        <>
+            Count: {state.count}
+            <button onClick={() => dispatch({type: 'reset', payload: initialCount})}>
+                Reset
+            </button>
+            <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+            <button onClick={() => dispatch({type: 'increment'})}>+</button>
+        </>
+    );
+}
+```
+
+### Bailing out of a dispatch
+
+* If you return the same value from a Reducer Hook as the current state
+    * React will bail out without rendering the children or firing effects
+    * React uses `Object.is` comparison algorithm
+
+> Note:
+> React may still need to render that specific component again before bailing out.
+> That shouldn't be a concern because React won't unnecessarily go "deeper" into the tree.
+> If you're doing expensive calculations while rendering, you can optimize them with `useMemo`.
