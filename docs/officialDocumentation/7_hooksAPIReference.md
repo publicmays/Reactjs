@@ -7,7 +7,7 @@
     * [useReducer](#useReducer)
     * [useCallback](#useCallback)
     * [useMemo](#useMemo)
-    * useRef
+    * [useRef](#useRef)
     * useImperativeHandle
     * useLayoutEffect
     * useDebugValue
@@ -355,4 +355,43 @@ const memoizedValue = useMemo(() => computeExpensiveValue(a,b), [a,b]);
 > Note:
 > The array of dependencies is not passed as arguments to the callback. 
 > Conceptually, though, that’s what they represent: every value referenced inside the callback should also appear in the dependencies array.
+
+## `useRef`
+
+```ts
+const refContainer = useRef(initialValue);
+```
+
+* `useRef` returns a **mutable ref** object whose `.current` property is initialized to the passed argument `initialValue`
+* Returned object will persist for the full lifetime of the component
+* Ex. access a child imperatively
+
+```ts
+function TextInputWithFocusButton() {
+    const inputEl = useRef(null);
+    const onButtonClick = () => {
+        // `current` points to the mounted text input element
+        inputEl.current.focus();
+    };
+    return (
+        <>
+            <input ref={inputEl} type="text" />
+            <button onClick={onButtonClick}>
+                Focus on the input
+            </button>
+        </>
+    );
+}
+```
+
+* `useRef` is like a “box” that can hold a mutable value in its `.current` property
+* If you pass a `ref` object to React with `<div ref={myRef} />` 
+    * React will set its `.current` property to the corresponding DOM node whenever that node changes.
+* `useRef()` is useful for more than the ref attribute. 
+    * Keeping any mutable value around similar to how you’d use instance fields in classes.
+* `useRef()` creates a plain JavaScript object. 
+* The only difference between `useRef()` and creating a `{current: ...}` object yourself is that `useRef` will give you the same ref object on every render.
+* `useRef` doesn’t notify you when its content changes. 
+* Mutating the `.current` property doesn’t cause a re-render. 
+* If you want to run some code when React attaches or detaches a ref to a DOM node, you may want to use a `callback ref` instead.
 
