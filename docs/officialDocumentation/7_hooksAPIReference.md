@@ -8,7 +8,7 @@
     * [useCallback](#useCallback)
     * [useMemo](#useMemo)
     * [useRef](#useRef)
-    * useImperativeHandle
+    * [useImperativeHandle](#useImperativeHandle)
     * useLayoutEffect
     * useDebugValue
 
@@ -394,4 +394,32 @@ function TextInputWithFocusButton() {
 * `useRef` doesn’t notify you when its content changes. 
 * Mutating the `.current` property doesn’t cause a re-render. 
 * If you want to run some code when React attaches or detaches a ref to a DOM node, you may want to use a `callback ref` instead.
+
+## `useImperativeHandle`
+
+```ts
+useImperativeHandld(ref, createHandle, [deps])
+```
+
+* `useImperativeHandle` customizes the instance value that is exposed to parent components when using `ref`
+
+> Note: imperative code using refs shoudl be avoided in most cases
+
+* `useImperativeHandle` should be used with `forwardRef`
+
+```ts
+function FancyInput(props, ref) {
+    const inputRef = useRef();
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            inputRef.current.focus();
+        }
+    }));
+    return <input ref={inputRef} ... />;
+}
+
+FancyInput = forwardRef(FancyInput);
+```
+
+* A parent component that renders `<FancyInput ref={inputRef} />` can call `inputRef.current.focus()`
 
