@@ -312,12 +312,14 @@ function Counter({initialCount}) {
 
 ## `useCallback`
 
+```ts
 const memoizedCallback = useCallback(
     () => {
         doSomething(a, b);
     },
     [a, b],
 );
+```
 
 * returns a `memoized` callback
 * pass an inline callback & an array of dependencies
