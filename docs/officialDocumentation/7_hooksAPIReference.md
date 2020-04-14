@@ -9,7 +9,7 @@
     * [useMemo](#useMemo)
     * [useRef](#useRef)
     * [useImperativeHandle](#useImperativeHandle)
-    * useLayoutEffect
+    * [useLayoutEffect](#useLayoutEffect)
     * useDebugValue
 
 # Basic Hooks
@@ -403,7 +403,7 @@ useImperativeHandld(ref, createHandle, [deps])
 
 * `useImperativeHandle` customizes the instance value that is exposed to parent components when using `ref`
 
-> Note: imperative code using refs shoudl be avoided in most cases
+> Note: imperative code using refs should be avoided in most cases
 
 * `useImperativeHandle` should be used with `forwardRef`
 
@@ -423,3 +423,29 @@ FancyInput = forwardRef(FancyInput);
 
 * A parent component that renders `<FancyInput ref={inputRef} />` can call `inputRef.current.focus()`
 
+## `useLayoutEffect`
+
+* Identical to `useEffect`, but it fires synchronously after all DOM mutations. 
+* Use this to read layout from the DOM and synchronously re-render,
+* Updates scheduled inside `useLayoutEffect` will be flushed synchronously, before the browser has a chance to paint.
+* Prefer the standard useEffect when possible to avoid blocking visual updates.
+
+> Tip
+
+* If you’re migrating code from a class component, note `useLayoutEffect` fires in the same phase as `componentDidMount` and `componentDidUpdate`. 
+* However, we recommend starting with useEffect first and only trying `useLayoutEffect` if that causes a problem.
+* If you use server rendering, keep in mind that neither useLayoutEffect nor useEffect can run until the JavaScript is downloaded. 
+* This is why React warns when a server-rendered component contains `useLayoutEffect`. To fix this, either move that logic to useEffect (if it isn’t necessary for the first render), or delay showing that component until after the client renders (if the HTML looks broken until useLayoutEffect runs).
+* To exclude a component that needs layout effects from the server-rendered HTML, render it conditionally with 
+
+```ts
+showChild && <Child />
+``` 
+
+and defer showing it with 
+
+```ts
+useEffect(() => { setShowChild(true); }, [])
+``` 
+
+This way, the UI doesn’t appear broken before hydration.
