@@ -5,7 +5,7 @@
 
 * [Additional Hooks](#additional-hooks)
     * [useReducer](#useReducer)
-    * useCallback
+    * [useCallback](#useCallback)
     * useMemo
     * useRef
     * useImperativeHandle
@@ -309,3 +309,29 @@ function Counter({initialCount}) {
 > React may still need to render that specific component again before bailing out.
 > That shouldn't be a concern because React won't unnecessarily go "deeper" into the tree.
 > If you're doing expensive calculations while rendering, you can optimize them with `useMemo`.
+
+## `useCallback`
+
+const memoizedCallback = useCallback(
+    () => {
+        doSomething(a, b);
+    },
+    [a, b],
+);
+
+* returns a `memoized` callback
+* pass an inline callback & an array of dependencies
+* `useCallback` will return a memoized version of the callback that only changes if one of the dependencies has changed
+* useful when passing callbacks to optimized child
+ components that rely on reference equality to prevent 
+ unnecessary renders (e.g. `shouldComponentUpdate`).
+
+ ```ts
+useCallback(fn, deps) === useMemo(() => fun, deps)
+ ```
+
+
+ > Note:
+ > The array of dependencies is not passed as arguments to the callback. 
+> Conceptually, though, that’s what they represent: every value referenced inside the callback should also appear in the dependencies array.
+
