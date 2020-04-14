@@ -6,7 +6,7 @@
 * [Additional Hooks](#additional-hooks)
     * [useReducer](#useReducer)
     * [useCallback](#useCallback)
-    * useMemo
+    * [useMemo](#useMemo)
     * useRef
     * useImperativeHandle
     * useLayoutEffect
@@ -333,7 +333,26 @@ useCallback(fn, deps) === useMemo(() => fun, deps)
  ```
 
 
- > Note:
- > The array of dependencies is not passed as arguments to the callback. 
+> Note:
+> The array of dependencies is not passed as arguments to the callback. 
+> Conceptually, though, that’s what they represent: every value referenced inside the callback should also appear in the dependencies array.
+
+## `useMemo`
+
+```ts
+const memoizedValue = useMemo(() => computeExpensiveValue(a,b), [a,b]);
+```
+
+* Returns a `memoized` value
+* Pass a `create` function and an array of dependencies
+* `useMemo` will only recompute the memoized value when one of the dependencies has changed.
+* Optimization: avoids expensive calculations on revery render
+* Side effects belong in `useEffect` not `useMemo`
+* Rely on `useMemo` as performance optimization not a semantic guarantee
+* In the future, React may choose to “forget” some previously memoized values and recalculate them on next render, e.g. to free memory for offscreen components. 
+* Write your code so that it still works without useMemo — and then add it to optimize performance.
+
+> Note:
+> The array of dependencies is not passed as arguments to the callback. 
 > Conceptually, though, that’s what they represent: every value referenced inside the callback should also appear in the dependencies array.
 
