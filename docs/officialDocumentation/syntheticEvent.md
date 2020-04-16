@@ -176,3 +176,32 @@ onError onLoad
 ```
 
 ### Mouse Events {#mouse-events}
+
+Event names:
+
+```ts
+onClick onContextMenu onDoubleClick onDrag onDragEnd onDragEnter onDragExit
+onDragLeave onDragOver onDragStart onDrop onMouseDown onMouseEnter onMouseLeave
+onMouseMove onMouseOut onMouseOver onMouseUp
+```
+
+* The `onMouseEnter` and `onMouseLeave` events propogate from the element being left to the one being entered instead of ordinary bubbling and do not have a capture phase.
+
+Properties:
+
+```ts
+boolean altKey
+number button
+number buttons
+number clientX
+number clientY
+boolean ctrlKey
+boolean getModifierState(key)
+boolean metaKey
+boolean pageX
+boolean pageY
+DOMEventTarget relatedTarget
+number screenX
+number screenY
+boolean shiftKey
+```
