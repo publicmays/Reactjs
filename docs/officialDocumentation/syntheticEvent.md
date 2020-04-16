@@ -104,3 +104,42 @@ DOMDataTransfer clipboardData
 
 ### Composition Events {#composition-events}
 
+Event names:
+
+```ts
+onCompositionEnd onCompositionStart onCompositionUpdate
+```
+
+Properties:
+
+```ts
+string data
+```
+
+### Keyboard Events {#keyboard-events}
+
+Event names:
+
+```ts
+onKeyDown onKeyPress onKeyUp
+```
+
+Properties:
+
+```ts
+boolean altKey
+number charCode
+boolean ctrlKey
+boolean getModifierState(key)
+string key
+number keyCode
+string locale
+number location
+boolean metaKey
+boolean repeat
+boolean shiftKey
+number which
+```
+
+* The `key` property can take any of the values documented in the [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#named-key-attribute-values).
+
