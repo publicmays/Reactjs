@@ -143,3 +143,36 @@ number which
 
 * The `key` property can take any of the values documented in the [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#named-key-attribute-values).
 
+### Focus Events {#focus-events}
+
+Event names:
+
+```ts
+onFocus onBlur
+```
+
+* These focus events work on all elements in the React DOM, not just form elements.
+
+Properties:
+
+```ts
+DomEventTarget relatedTarget
+```
+
+### Form Events {#form-events}
+
+Event names:
+
+```ts
+onChange onInput onInvalid onReset onSubmit
+```
+
+### Generic Events {#generic-events}
+
+Event names:
+
+```ts
+onError onLoad
+```
+
+### Mouse Events {#mouse-events}
