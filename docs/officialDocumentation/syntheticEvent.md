@@ -318,3 +318,43 @@ Event names:
 ```ts
 onLoad onError
 ```
+
+### Animation Events {#animation-events}
+
+Event names:
+
+```ts
+onAnimationStart onAnimationEnd onAnimationIteration
+```
+
+Properties:
+
+```ts
+string animationName
+string pseudoElement
+float elapsedTime
+```
+
+### Transition Events {#transition-events}
+
+Event names:
+
+```ts
+onTransitionEnd
+```
+
+Properties:
+
+```ts
+string propertyName
+string pseudoElement
+float elapsedTime
+```
+
+### Other Events {#other-events}
+
+Event names:
+
+```ts
+onToggle
+```
