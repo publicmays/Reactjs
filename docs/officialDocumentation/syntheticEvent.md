@@ -247,3 +247,74 @@ Event names:
 ```ts
 onSelect
 ```
+
+
+### Touch Events {#touch-events}
+
+Event names:
+
+```ts
+onTouchCancel onTouchEnd onTouchMove onTouchStart
+```
+
+Properties:
+
+```ts
+boolean altKey
+DOMTouchList changedTouches
+boolean ctrlKey
+boolean getModifierState(key)
+boolean metaKey
+boolean shiftKey
+DOMTouchList targetTouches
+DOMTouchList touches
+```
+
+### UI Events {#ui-events}
+
+Event names:
+
+```ts
+onScroll
+```
+
+
+Properties:
+
+```ts
+number detail
+DOMAbstractView view
+```
+
+### Wheel Events {#wheel-events}
+
+Event names:
+
+```ts
+onWheel
+```
+
+Properties:
+
+```ts
+number deltaMode
+number deltaX
+number deltaY
+number deltaZ
+```
+
+### Media Events {#media-events}
+
+Event names:
+
+```ts
+onAbort onCanPlay onCanPlayThrough onDurationChange onEmptied onEncrypted onEnded onError onLoadedData onLoadedMetadata onLoadStart onPause onPlay onPlaying onProgress onRateChange onSeeked onSeeking onStalled onSuspend onTimeUpdate onVolumeChange onWaiting
+```
+
+### Image Events {#image-events}
+
+Event names:
+
+```ts
+onLoad onError
+```
