@@ -205,3 +205,45 @@ number screenX
 number screenY
 boolean shiftKey
 ```
+
+### Pointer Events {#pointer-events}
+
+Event names:
+
+```ts
+onPointerDown onPointerMove onPointerUp onPointerCancel onGotPointerCapture
+onLostPointerCapture onPointerEnter onPointerLeave onPointerOver onPointerOut
+```
+
+The `onPointerEnter` and `onPointerLeave` events propagate from the element being left to the one being entered instead of ordinary bubbling and do not have a capture phase.
+
+Properties:
+
+As defined in the [W3 spec](https://www.w3.org/TR/pointerevents/), pointer events extend [Mouse Events](#mouse-events) with the following properties:
+
+```ts
+number pointerId
+number width
+number height
+number pressure
+number tangentialPressure
+number tiltX
+number tiltY
+number twist
+string pointerType
+boolean isPrimary
+```
+
+A note on cross-browser support:
+
+Pointer events are not yet supported in every browser (at the time of writing this article, supported browsers include: Chrome, Firefox, Edge, and Internet Explorer). React deliberately does not polyfill support for other browsers because a standard-conform polyfill would significantly increase the bundle size of `react-dom`.
+
+If your application requires pointer events, we recommend adding a third party pointer event polyfill.
+
+### Selection Events {#selection-events}
+
+Event names:
+
+```ts
+onSelect
+```
