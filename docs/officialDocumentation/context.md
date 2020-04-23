@@ -148,3 +148,21 @@ function Page(props) {
 
 * This pattern is sufficient for many cases when you need to decouple a child from its immediate parents. 
 * Context lets you “broadcast” such data, and changes to it, to all components below.
+
+## API
+
+### `React.createContext`
+
+
+```ts
+const MyContext = React.createContext(defaultValue);
+```
+
+* Creates a context object
+* React renders a component that subscribes to this `Context` object it will read the current context value from the closest matching `Provider` above it in the tree
+
+* The `defaultValue` argument is only used when a component does not have a matching `Provider` above it in the tree. 
+* This can be helpful for testing components in isolation without wrapping them. 
+* Note: passing undefined as a Provider value does not cause consuming components to use defaultValue.
+
+### `Context.Provider`
