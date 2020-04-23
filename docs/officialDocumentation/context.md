@@ -177,3 +177,39 @@ const MyContext = React.createContext(defaultValue);
 * The propagation from `Provider` to its descendant consumers (including `.contextType` and `useContext`) is not subject to the `shouldComponentUpdate` method, so the consumer is updated even when an ancestor component skips an update.
 * Changes are determined by comparing the new and old values using the same algorithm as `Object.is`.
 
+### `Class.contextType`
+
+```ts
+class MyClass extends React.Component {
+    componentDidMount() {
+        let value = this.context;
+        /* perform a side-effect at mount using the value of MyContext */
+    }
+    componentDidUpdate() {
+        let value = this.context;
+    }
+    componentWillUnmount() {
+        let value = this.context;
+    }
+    render() {
+        let value = this.context;
+        /* render something based on the value of MyContext */
+    }
+}
+MyClass.contextType = MyContext;
+```
+
+* The contextType property on a class can be assigned a Context object created by `React.createContext()`. 
+* This lets you consume the nearest current value of that Context type using this.context. You can reference this in any of the lifecycle methods including the render function.
+
+* Note: If you are using the experimental public class fields syntax, you can use a `static` class field to initialize your contextType.
+
+```ts
+class MyClass extends React.Component {
+    static contextType = MyContext;
+    render() {
+        let value = this.context;
+        /* render something based on the value */
+    }
+}
+```
