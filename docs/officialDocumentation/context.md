@@ -213,3 +213,11 @@ class MyClass extends React.Component {
     }
 }
 ```
+
+### `Context.Consumer`
+
+```ts
+<MyContext.Consumer>
+    {value => /* render something based on the context value */}
+</MyContext.Consumer>
+```
