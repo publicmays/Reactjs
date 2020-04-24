@@ -227,3 +227,200 @@ class MyClass extends React.Component {
 * The function receives the current context value and returns a React node. 
 * The `value` argument passed to the function will be equal to the `value` prop of the closest Provider for this context above in the tree. 
 * If there is no Provider for this context above, the value argument will be equal to the `defaultValue` that was passed to `createContext()`.
+
+### `Context.displayName`
+
+* Context object accepts a `displayName` string property. React DevTools uses this string to determine what to display for the context.
+* For example, the following component will appear as `MyDisplayName` in the DevTools
+
+```ts
+const MyContext = React.createContext(/* some value */);
+MyContext.displayName = 'MyDisplayName';
+
+<MyContext.Provider> // "MyDisplayName.Provider" in DevTools
+<MyContext.Consumer> // "MyDisplayName.Consumer" in DevTools
+```
+
+## Examples
+
+### Dynamic Context
+
+* A more complex example with dynamic values for the theme:
+
+* theme-context.js
+
+```ts
+export const themes = {
+    light: {
+        foreground: '#000000',
+        background: '#eeeeee',
+    },
+    dark: {
+        foreground: '#ffffff',
+        background: '#222222',
+    }
+};
+
+export const ThemeContext = React.createContext(
+    themes.dark // default value
+);
+```
+
+* themed-button.js
+
+```ts
+import { ThemeContext } from './theme-context';
+
+class ThemedButton extends React.Component {
+    render() {
+        let props = this.props;
+        let theme = this.context;
+    }
+    return (
+        <button 
+            {...props}
+            style={{backgroundColor: theme.background}}
+        />
+    );
+}
+ThemedButton.contextType = ThemeContext;
+
+export default ThemedButton;
+```
+
+* app.js
+
+```ts
+import {ThemeContext, themes} from './theme-context';
+import ThemedButton from './themed-button';
+
+// An intermediate component that uses the ThemedButton
+function Toolbar(props) {
+    <ThemedButton onClick={props.changeTheme}>
+        Change Theme
+    </ThemedButton>
+}
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            theme: themes.light;
+        };
+
+        this.toggleTheme = () => {
+            this.setState(state => ({
+                theme:
+                    state.theme === themes.dark
+                        ? themes.light
+                        : themes.dark,
+            }));
+        };
+    }
+
+    render() {
+        // The ThemedButton button inside the ThemeProvider
+        // uses the theme from state while the one outside uses
+        // the default dark theme
+        return (
+            <Page>
+                <ThemeContext.Provider value={this.state.theme}>
+                    <Toolbar changeTheme={this.toggleTheme}>
+                </ThemeContext.Provider>
+                <Section>
+                    <ThemedButton />
+                </Section>
+            </Page>
+        );
+    }
+}
+
+ReactDOM.render(<App />, document.root);
+```
+
+### Updating Context from a Nested Component
+
+* It is often necessary to update the context from a component that is nested somewhere deeply in the component tree. 
+* Solution: pass a function down through the context to allow consumers to update the context:
+
+* theme-context.js
+
+```ts
+// Make sure the shape of the default value passed to
+// createContext matches the shape that the consumers expect!
+export const ThemeContext = React.createContext({
+    theme: themes.dark,
+    toggleTheme: () => {},
+});
+```
+
+* theme-toggler-button.js
+
+```ts
+import [ThemeContext} from './theme-context';
+
+function ThemeTogglerButton() {
+    // The Theme Toggler Button receives not only the theme
+    // but also a toggleTheme function from the context
+    return (
+        <ThemeContext.Consumer>
+            {({theme, toggleTheme}) => (
+                <button
+                    onClick={toggleTheme}
+                    style={{backgroundColor: theme.background}}>
+                Toggle Theme
+                </button>
+            )}
+        </ThemeContext.Consumer>
+    );
+}
+
+export default ThemeTogglerButton
+```
+
+* app.js
+
+```ts
+import {ThemeContext, themes} from './theme-context';
+import ThemeTogglerButton from './theme-toggler-button';
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.toggleTheme = () => {
+            this.setState(state => ({
+                theme:
+                    state.theme === themes.dark
+                        ? themes.light,
+                        : themes.dark,
+            }));
+        };
+
+        // State also contains the updater function so it will
+        // be passed down into the context provider
+        this.state = {
+            theme: themes.light,
+            toggleTheme: this.toggleTheme,
+        };
+    }
+    render() {
+        // The entire state is passed to the provider
+        <ThemeContext.Provider value={this.state}>
+            <Content />
+        </ThemeContext.Provider>
+    }
+}
+
+function Content() {
+    return (
+        <div>
+            <ThemeTogglerButton />
+        </div>
+    );
+}
+
+ReactDOM.render(<App />, document.root);
+```
+
+### Consuming Multiple Contexts
