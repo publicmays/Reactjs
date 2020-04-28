@@ -60,3 +60,9 @@ const ref = React.createRef();
 
 ## Forwarding refs in higher-order components
 
+* This technique can also be particularly useful with higher-order components (also known as HOCs). 
+* Ex. HOC that logs component props to the console:
+
+```ts
+
+```
