@@ -109,8 +109,24 @@ class Columns extends React.Component {
 
 ## Keyed Fragments
 
-* Fragments declared with the explicit `<React.Fragment>` syntax may have keys. A use case for this is mapping a collection to an array of fragments — for example, to create a description list:
+* Fragments declared with the explicit `<React.Fragment>` syntax may have keys. 
+* A use case for this is mapping a collection to an array of fragments — for example, to create a description list:
+* `key` is the only attribute that can be passed to Fragment
 
 ```ts
-
+function Glossary(props) {
+    return(
+        <dl>
+            {props.items.map(
+                item => (
+                    // Without the `key`, React will fire a key warning
+                    <React.Fragment key={item.id}>
+                        <dt>{item.term}</dt>
+                        <dd>{item.description}</dd>
+                    </React.Fragment>
+                )
+            )}
+        </dl>
+    );
+}
 ```
