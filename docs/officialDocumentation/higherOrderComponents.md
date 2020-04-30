@@ -169,3 +169,20 @@ function withSubscription(WrappedComponent, selectData) {
 * This makes it easy to swap one HOC for a different one, as long as they provide the same props to the wrapped component.
 
 ## Don’t Mutate the Original Component. Use Composition.
+
+* Resist the temptation to modify a component’s prototype (or otherwise mutate it) inside a HOC.
+
+```ts
+function logProps(InputComponent) {
+    InputComponent.prototype.componentDidUpdate = function(prevProps) {
+        console.log('Current props:', this.props);
+        console.log('Previous props:', prevProps);
+    };
+
+    // The fact that we're returning the original input is a hint that it has been mutated.
+    return InputComponent;
+}
+
+// EnhancedComponent will log whenever props are received
+const EnhancedComponent = logProps(InputComponent);
+```
