@@ -186,3 +186,37 @@ function logProps(InputComponent) {
 // EnhancedComponent will log whenever props are received
 const EnhancedComponent = logProps(InputComponent);
 ```
+
+* There are a few problems with this. One is that the input component cannot be reused separately from the enhanced component. 
+* More crucially, if you apply another HOC to EnhancedComponent that also mutates componentDidUpdate, the first HOC’s functionality will be overridden! 
+* This HOC also won’t work with function components, which do not have lifecycle methods.
+* Mutating HOCs are a leaky abstraction—the consumer must know how they are implemented in order to avoid conflicts with other HOCs.
+* Instead of mutation, HOCs should use composition, by wrapping the input component in a container component:
+
+```ts
+function logProps(WrappedComponent) {
+    return class extends React.Component {
+        componentDidUpdate(prevProps) {
+            console.log('Current props: ', this.props);
+            console.log('Previous props: ', prevProps);
+        }
+    }
+    render() {
+        // Wraps the input component in a container,
+        // without mutating it. Good!
+        return(
+            <WrappedComponent {...this.props} />;
+        );
+    }
+}
+```
+
+* This HOC has the same functionality as the mutating version while avoiding the potential for clashes. 
+* It works equally well with class and function components. 
+* And because it’s a pure function, it’s composable with other HOCs, or even with itself.
+* You may have noticed similarities between HOCs and a pattern called container components. 
+* Container components are part of a strategy of separating responsibility between high-level and low-level concerns.
+* Containers manage things like subscriptions and state, and pass props to components that handle things like rendering UI.
+* HOCs use containers as part of their implementation. 
+* You can think of HOCs as parameterized container component definitions.
+
