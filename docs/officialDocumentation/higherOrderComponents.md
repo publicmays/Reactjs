@@ -364,3 +364,41 @@ const EnhancedComponent = enhance(WrappedComponent);
 // The enhancedComponent has no static method
 typeof EnhancedComponent.staticMethod === 'undefined' // true
 ```
+
+* To solve this, you could copy the methods onto the container before returning it:
+
+```ts
+function enhance(WrappedComponent) {
+    class Enhance extends React.Component {/*...*/}
+    // Must know exactly which method(s) to copy :(
+    Enhance.staticMethod = WrappedComponent.staticMethod;
+    return Enhance;
+}
+```
+
+* However, this requires you to know exactly which methods need to be copied. You can use hoist-non-react-statics to automatically copy all non-React static methods:
+
+```ts
+import hoistNonReactStatic from 'hoist-non-react-statics';
+function enhance(WrappedComponent) {
+    class Enhance extends React.Component {/*...*/}
+    hoistNonReactStatic(Enhance, WrappedComponent);
+    return Enhance;
+}
+```
+
+* Another possible solution is to export the static method separately from the component itself.
+
+```ts
+// Instead of ...
+MyComponent.someFunction = someFunction;
+export default MyComponent;
+
+// ... export the method separately...
+export { someFunction };
+
+// ...and in the consuming module, import both
+import MyComponent, {someFunction} from './MyComponent.js';
+```
+
+### Refs Aren’t Passed Through
