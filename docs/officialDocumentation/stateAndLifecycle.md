@@ -76,3 +76,76 @@ class Clock extends React.Component {
 * This lets us use additional features such as local state and lifecycle methods.
 
 ## Adding Local State to a Class
+* We will move the date from props to state in three steps:
+
+1. Replace `this.props.date` with `this.state.date` in the `render()` method:
+
+```ts
+class Clock extends React.Component {
+    render() {
+        return(
+            <div>
+                <h1>Hello, world!</h1>
+                <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            </div>
+        );
+    }
+}
+```
+
+2. Add a class constructor that assigns the initial this.state:
+
+```ts
+class Clock extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            date: new Date()
+        };
+    }
+    render() {
+        return(
+            <div>
+                <h1>Hello, world!</h1>
+                <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            </div>
+        );
+    }
+}
+```
+
+3. Remove the date prop from the <Clock /> element:
+
+```ts
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+
+* The result looks like this:
+
+```ts
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+
+## Adding Lifecycle Methods to a Class
