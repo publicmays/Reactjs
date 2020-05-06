@@ -142,5 +142,62 @@ tryConvert('10.22', toFahrenheit) // returns '50.396'.
 
 
 ```ts
+class TemperatureInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.state = {temperature: ''};
+    }
+
+    handleChange(e) {
+        this.setState({temperature: e.target.value});
+    }
+    render() {
+        const temperature = this.state.temperature;
+        // ...
+    }
+}
+```
+
+* However, we want these two inputs to be in sync with each other. 
+* When we update the Celsius input, the Fahrenheit input should reflect the converted temperature, and vice versa.
+* In React, sharing state is accomplished by moving it up to the closest common ancestor of the components that need it. 
+* This is called “lifting state up”. 
+* We will remove the local state from the TemperatureInput and move it into the Calculator instead.
+* If the Calculator owns the shared state, it becomes the “source of truth” for the current temperature in both inputs. It can instruct them both to have values that are consistent with each other. 
+* Since the props of both TemperatureInput components are coming from the same parent Calculator component, the two inputs will always be in sync.
+* Let’s see how this works step by step.
+
+* First, we will replace `this.state.temperature` with `this.props.temperature` in the TemperatureInput component. 
+* For now, let’s pretend `this.props.temperature` already exists, although we will need to pass it from the Calculator in the future: 
+
+```ts
+render() {
+    // Before: const temperature = this.state.temperature;
+    const temperature = this.props.temperature;
+    // ...
+}
+```
+
+* We know that props are read-only. 
+* When the temperature was in the local state, the `TemperatureInput` could just call `this.setState()` to change it.
+* However, now that the temperature is coming from the parent as a prop, the `TemperatureInput` has no control over it.
+* In React, this is usually solved by making a component “controlled”. Just like the DOM `<input>` accepts both a value and an onChange prop, so can the custom TemperatureInput accept both temperature and onTemperatureChange props from its parent Calculator.
+* Now, when the `TemperatureInput` wants to update its temperature, it calls `this.props.onTemperatureChange`:
+
+```ts
+handleChange(e) {
+    // Before: this.setState({temperature: e.target.value});
+    this.props.onTemperatureChange(e.target.value);
+}
+```
+
+* The `onTemperatureChange` prop will be provided together with the temperature prop by the parent Calculator component. 
+* It will handle the change by modifying its own local state, thus re-rendering both inputs with the new values. 
+* Before diving into the changes in the Calculator, let’s recap our changes to the TemperatureInput component. 
+* We have removed the local state from it, and instead of reading `this.state.temperature`, we now read `this.props.temperature`.
+* Instead of calling `this.setState()` when we want to make a change, we now call `this.props.onTemperatureChange()`, which will be provided by the Calculator:
+
+```ts
 
 ```
