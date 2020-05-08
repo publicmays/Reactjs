@@ -205,3 +205,161 @@ So finally, our state is:
 * The value of the checkbox
 
 ## Step 4: Identify Where Your State Should Live
+
+```ts
+class ProductCategoryRow extends React.Component {
+    render() {
+        const category = this.props.category;
+        return (
+            <tr>
+                <th colSpan="2">
+                    {category}
+                </th>
+            </tr>
+        );
+    }
+}
+
+class ProductRow extends React.Component {
+    render() {
+        const product = this.props.product;
+        const name = product.stocked 
+            ? product.name 
+            : <span style={{color: 'red'}}>
+                {product.name}
+            </span>;
+        return (
+            <tr>
+                <td>{name}</td>
+                <td>{product.price}</td>
+            </tr>
+        );
+    }
+}
+
+class ProductTable extends React.Component {
+    conts filterText = this.props.filterText;
+    const inStockOnly = this.props.inStockOnly;
+    const rows = [];
+    let lastCategory = null;
+
+    this.props.products.forEach((product) => {
+        if (product.name.indexOf(filterText) === -1) {
+            return;
+        }
+        if (inStockOnly && !product.stocked) {
+            return;
+        }
+        if (product.category !== lastCategory) {
+            rows.push(
+                <ProductCategoryRow
+                    category={product.category} 
+                    key={product.category}
+                />
+            );
+        }
+        rows.push(
+            <ProductRow
+                product={product}
+                key={product.name}
+            />
+        );
+        lastCategory = product.category;
+    });
+
+    return (
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+        </table>
+    );
+}
+
+class SearchBar extends React.Component {
+    render() {
+        const filterText = this.props.filterTet;
+        const inStockOnly = this.props.inStockOnly;
+        return (
+            <form>
+                <input 
+                    type="text"
+                    placeholder="Search..."
+                    value={filterText} />
+                <p>
+                    <input 
+                        type="checkbox"
+                        checked={inStockOnly} />
+                    {' '}
+                    Only show products in stock
+                </p>
+            </form>
+        );
+    }
+}
+
+class FilterableProductTable extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            filterText: '',
+            inStockOnly: false
+        };
+    }
+
+    render() {
+        return (
+            <div>
+                <SearchBar 
+                    filterText={this.state.filterText} 
+                    inStockOnly={this.state.inStockOnly} />
+                <ProductTable 
+                    products={this.props.products}
+                    filterText={this.state.filterText}
+                    inStockOnly={this.state.inStockOnly}
+                />
+            </div>
+        );
+    }
+}
+
+const PRODUCTS = [
+    {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football'},
+    {category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball'},
+    {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball'},
+    {category: 'Electronics', price: '$99.99', stocked: true, name: 'iPod Touch'},
+    {category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5'},
+    {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
+  ];
+  
+ReactDOM.render(
+    <FilterableProductTable products={PRODUCTS} />,
+    document.getElementById('container')
+);
+```
+
+* OK, so we’ve identified what the minimal set of app state is. Next, we need to identify which component mutates, or owns, this state.
+
+* Remember: React is all about one-way data flow down the component hierarchy. It may not be immediately clear which component should own what state. This is often the most challenging part for newcomers to understand, so follow these steps to figure it out:
+
+* For each piece of state in your application:
+
+* Identify every component that renders something based on that state.
+* Find a common owner component (a single component above all the components that need the state in the hierarchy).
+* Either the common owner or another component higher up in the hierarchy should own the state.
+* If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common owner component.
+* Let’s run through this strategy for our application:
+
+* ProductTable needs to filter the product list based on state and SearchBar needs to display the search text and checked state.
+* The common owner component is FilterableProductTable.
+* It conceptually makes sense for the filter text and checked value to live in FilterableProductTable
+* Cool, so we’ve decided that our state lives in FilterableProductTable. 
+* First, add an instance property `this.state = {filterText: '', inStockOnly: false}` to FilterableProductTable’s constructor to reflect the initial state of your application. Then, pass `filterText` and `inStockOnly` to `ProductTable` and `SearchBar` as a prop. Finally, use these props to filter the rows in `ProductTable` and set the values of the form fields in `SearchBar`.
+
+* You can start seeing how your application will behave: set filterText to "ball" and refresh your app. You’ll see that the data table is updated correctly.
+
+## Step 5: Add Inverse Data Flow
