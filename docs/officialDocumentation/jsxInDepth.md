@@ -81,3 +81,9 @@ function BlueDatePicker() {
 ```
 
 ### User-Defined Components Must Be Capitalized
+
+* When an element type starts with a lowercase letter, it refers to a built-in component like <div> or <span> and results in a string 'div' or 'span' passed to React.createElement. Types that start with a capital letter like <Foo /> compile to React.createElement(Foo) and correspond to a component defined or imported in your JavaScript file.
+
+We recommend naming components with a capital letter. If you do have a component that starts with a lowercase letter, assign it to a capitalized variable before using it in JSX.
+
+For example, this code will not run as expected:
