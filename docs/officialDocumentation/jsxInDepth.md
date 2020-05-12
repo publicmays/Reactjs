@@ -346,3 +346,37 @@ render() {
 ```
 
 ### JavaScript Expressions as Children
+
+* You can pass any JavaScript expression as children, by enclosing it within `{}`. For example, these expressions are equivalent:
+
+```ts
+<MyComponent>foo</MyComponent>
+<MyComponent>{'foo'}</MyComponent>
+```
+
+* This is often useful for rendering a list of JSX expressions of arbitrary length. For example, this renders an HTML list:
+
+```ts
+function Item(props) {
+    return <li>{props.message}</li>;
+}
+
+function TodoList() {
+    const todos = ['finish doc', 'submit pr', 'nag dan to review'];
+    return (
+        <ul>
+            {todos.map((message) => <Item key={message} message={message}/>)}
+        </ul>
+    );
+}
+```
+
+* JavaScript expressions can be mixed with other types of children. This is often useful in lieu of string templates:
+
+```ts
+function Hello(props) {
+    return <div>Hello {props.addressee}!</div>;
+}
+```
+
+### Functions as Children
