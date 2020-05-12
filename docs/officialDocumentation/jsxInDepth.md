@@ -308,3 +308,41 @@ const App = () => {
 ```
 
 ### JSX Children
+
+* You can provide more JSX elements as the children. This is useful for displaying nested components:
+
+```ts
+<MyContainer>
+    <MyFirstComponent />
+    <MySecondComponent />
+</MyContainer>
+```
+
+* You can mix together different types of children, so you can use string literals together with JSX children. 
+* This is another way in which JSX is like HTML, so that this is both valid JSX and valid HTML:
+
+```ts
+<div>
+    Here is a list:
+    <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+    </ul>
+</div>
+```
+
+* A React component can also return an array of elements:
+
+```ts
+render() {
+    // No need to wrap list items in an extra element!
+    return [
+        // Don't forget the keys :)
+        <li key="A">First item</li>,
+        <li key="B">Second item </li>,
+        <li key="C">Third item</li>,
+    ];
+}
+```
+
+### JavaScript Expressions as Children
