@@ -276,4 +276,35 @@ const App = () => {
 
 * You can put a string between the opening and closing tags and `props.children` will just be that string. This is useful for many of the built-in HTML elements. For example:`
 
-<MyComponent>Hello world!</MyComponent>
+```ts
+<MyComponent> Hello world! </MyComponent>
+```
+
+* This is valid JSX, and props.children in MyComponent will simply be the string "Hello world!". HTML is unescaped, so you can generally write JSX just like you would write HTML in this way:
+
+```ts
+<div>This is valid HTML &amp; JSX at the same time.</div>
+```
+
+* JSX removes whitespace at the beginning and ending of a line. It also removes blank lines. 
+* New lines adjacent to tags are removed; new lines that occur in the middle of string literals are condensed into a single space. So these all render to the same thing:
+
+```ts
+<div>Hello World</div>
+
+<div>
+    Hello World
+</div>
+
+<div>
+    Hello
+    World
+</div>
+
+<div>
+
+    Hello World
+</div>
+```
+
+### JSX Children
