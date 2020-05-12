@@ -408,3 +408,62 @@ function ListOfTenThings() {
 * This usage is not common, but it works if you want to stretch what JSX is capable of.
 
 ### Booleans, Null, and Undefined Are Ignored
+
+* `false`
+* `null`
+* `undefined`
+* `true` 
+
+* are valid children. They simply don’t render. These JSX expressions will all render to the same thing:
+
+```ts
+<div />
+
+<div></div>
+
+<div>{false}</div>
+
+<div>{null}</div>
+
+<div>{undefined}</div>
+
+<div>{true}</div>
+```
+
+* This can be useful to conditionally render React elements. This JSX renders the `<Header />` component only if showHeader is true:
+
+```ts
+<div>
+    {showHeader && <Header />}
+    <Content />
+</div>
+```
+
+* One caveat is that some “falsy” values, such as the 0 number, are still rendered by React. 
+* For example, this code will not behave as you might expect because 0 will be printed when `props.messages` is an empty array:
+
+```ts
+<div>
+    {props.messages.length &&
+        <MessageList messages={props.messages} />
+    }
+</div>
+```
+
+* To fix this, make sure that the expression before && is always boolean:
+
+```ts
+<div>
+    {props.messages.length > 0 &&
+        <MessageList messages={props.messages} />
+    }
+</div>
+```
+
+* Conversely, if you want a value like `false`, `true`, `null`, or `undefined` to appear in the output, you have to convert it to a string first:
+
+```ts
+<div>
+    My Javascript variable is {String(myVariable)}.
+</div>
+```
