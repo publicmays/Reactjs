@@ -269,3 +269,11 @@ const App = () => {
 * We recommend using this syntax sparingly.
 
 ## Children in JSX
+
+* In JSX expressions that contain both an opening tag and a closing tag, the content between those tags is passed as a special prop: props.children. There are several different ways to pass children:
+
+### String Literals
+
+* You can put a string between the opening and closing tags and `props.children` will just be that string. This is useful for many of the built-in HTML elements. For example:`
+
+<MyComponent>Hello world!</MyComponent>
