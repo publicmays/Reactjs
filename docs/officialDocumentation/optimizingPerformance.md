@@ -43,3 +43,13 @@ In most cases, instead of writing `shouldComponentUpdate()` by hand, you can inh
 Here’s a subtree of components. For each one, `SCU` indicates what `shouldComponentUpdate` returned, and `vDOMEq` indicates whether the rendered React elements were equivalent. Finally, the circle’s color indicates whether the component had to be reconciled or not.
 
 ![](https://reactjs.org/static/5ee1bdf4779af06072a17b7a0654f6db/cd039/should-component-update.png)
+
+Since `shouldComponentUpdate` returned false for the subtree rooted at C2, React did not attempt to render C2, and thus didn’t even have to invoke `shouldComponentUpdate` on C4 and C5.
+
+For C1 and C3, `shouldComponentUpdate` returned true, so React had to go down to the leaves and check them. For C6 `shouldComponentUpdate` returned true, and since the rendered elements weren’t equivalent React had to update the DOM.
+
+The last interesting case is C8. React had to render this component, but since the React elements it returned were equal to the previously rendered ones, it didn’t have to update the DOM.
+
+Note that React only had to do DOM mutations for C6, which was inevitable. For C8, it bailed out by comparing the rendered React elements, and for C2’s subtree and C7, it didn’t even have to compare the elements as we bailed out on `shouldComponentUpdate`, and render was not called.
+
+## Examples
