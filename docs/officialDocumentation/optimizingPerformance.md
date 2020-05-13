@@ -145,3 +145,54 @@ class WordAdder extends React.Component {
 * The problem is that PureComponent will do a simple comparison between the old and new values of `this.props.words`. Since this code mutates the words array in the handleClick method of WordAdder, the old and new values of `this.props.words` will compare as equal, even though the actual words in the array have changed. The `ListOfWords` will thus not update even though it has new words that should be rendered.
 
 ## The Power Of Not Mutating Data
+
+* The simplest way to avoid this problem is to avoid mutating values that you are using as props or state. 
+* For example, the `handleClick` method above could be rewritten using concat as:
+
+```ts
+handleClick() {
+    this.setState(state => ({
+        words: state.words.concat(['marklar'])
+    }));
+}
+```
+
+* ES6 supports a spread syntax for arrays which can make this easier. If you’re using Create React App, this syntax is available by default.
+
+```ts
+handleClick() {
+    this.setState(state => ({
+        words: [...state.words, 'marklar'],
+    }));
+}
+```
+
+* You can also rewrite code that mutates objects to avoid mutation, in a similar way. For example, let’s say we have an object named `colormap` and we want to write a function that changes `colormap.right` to be `'blue'`. We could write:
+
+```ts
+function updateColorMap(colorMap) {
+    colormap.right = 'blue';
+}
+```
+
+* To write this without mutating the original object, we can use `Object.assign` method:
+
+```ts
+function updateColorMap(colormap) {
+    return Object.assign({}, colormap, {right: 'blue'});
+} 
+```
+
+* updateColorMap now returns a new object, rather than mutating the old one. `Object.assign` is in ES6 and requires a polyfill.
+
+* There is a JavaScript proposal to add object spread properties to make it easier to update objects without mutation as well:
+
+```ts
+function updateColorMap(colormap) {
+    return {...colormap, right: 'blue'};
+}
+```
+
+If you’re using Create React App, both Object.assign and the object spread syntax are available by default.
+
+When you deal with deeply nested objects, updating them in an immutable way can feel convoluted. If you run into this problem, check out Immer or immutability-helper. These libraries let you write highly readable code without losing the benefits of immutability.
