@@ -53,3 +53,95 @@ The last interesting case is C8. React had to render this component, but since t
 Note that React only had to do DOM mutations for C6, which was inevitable. For C8, it bailed out by comparing the rendered React elements, and for C2’s subtree and C7, it didn’t even have to compare the elements as we bailed out on `shouldComponentUpdate`, and render was not called.
 
 ## Examples
+
+If the only way your component ever changes is when the `props.color` or the `state.count` variable changes, you could have `shouldComponentUpdate` check that:
+
+```ts
+class CounterButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {count: 1};
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.color !== nextProps.color) {
+            return true;
+        }
+        if (this.state.count !== nextState.count) {
+            return true;
+        }
+        return false;
+    }
+
+    render() {
+        return (
+            <button
+                color={this.props.color}
+                onClick={() => this.setState(state => ({count: state.count + 1}))}>
+            Count: {this.state.count}
+            </button>
+        );
+    }
+}
+```
+
+In this code, shouldComponentUpdate is just checking if there is any change in `props.color` or `state.count`. If those values don’t change, the component doesn’t update. If your component got more complex, you could use a similar pattern of doing a “shallow comparison” between all the fields of props and state to determine if the component should update. This pattern is common enough that React provides a helper to use this logic - just inherit from `React.PureComponent`. So this code is a simpler way to achieve the same thing:
+
+```ts
+class CounterButton extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {count: 1};
+    }
+    render() {
+        return (
+            <button
+                color={this.props.color}
+                onClick={() => this.setState(state => ({count: state.count+1}))}>
+                Count: {this.state.count}
+            </button>
+        );
+    }
+}
+```
+
+Most of the time, you can use `React.PureComponent` instead of writing your own `shouldComponentUpdate`. It only does a shallow comparison, so you can’t use it if the props or state may have been mutated in a way that a shallow comparison would miss.
+
+This can be a problem with more complex data structures. For example, let’s say you want a `ListOfWords` component to render a comma-separated list of words, with a parent `WordAdder` component that lets you click a button to add a word to the list. This code does not work correctly:
+
+```ts
+class ListOfWords extends React.PureComponent {
+    render() {
+        return <div>{this.props.words.join(',')}</div>;
+    }
+}
+
+class WordAdder extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            words: ['marklar']
+        };
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        // This section is bad style and causes a bug
+        const words = this.state.words;
+        words.push('marklar');
+        this.setState({words: words});
+    }
+
+    render() {
+        return (
+            <div>
+                <button onClick={this.handleClick} />
+                <ListOfWords words={this.state.words} />
+            </div>
+        );
+    }
+}
+```
+
+* The problem is that PureComponent will do a simple comparison between the old and new values of `this.props.words`. Since this code mutates the words array in the handleClick method of WordAdder, the old and new values of `this.props.words` will compare as equal, even though the actual words in the array have changed. The `ListOfWords` will thus not update even though it has new words that should be rendered.
+
+## The Power Of Not Mutating Data
