@@ -60,3 +60,31 @@ render(
 ```
 
 ## `onRender` Callback
+
+* The Profiler requires an onRender function as a prop. React calls this function any time a component within the profiled tree “commits” an update. It receives parameters describing what was rendered and how long it took.
+
+```ts
+function onRenderCallback(
+    id, // "id" prop of the Profiler tree that has just committed
+    phase, // either "mount" (if tree just mounted) or "update" (if it re-rendered)
+    actualDuration, // time spent rendering the committed update
+    baseDuration, // estimated time to render entire subtree without memoization
+    startTime, // when React began rendering this update
+    commitTime, // when React committed this update
+    interactions // the Set of interactions belonging to this update
+) {
+    // Aggregate or log render timings...
+}
+```
+
+* **id:** string - The `id` prop of the Profiler tree that has just committed. This can be used to identify which part of the tree was committed if you are using multiple profilers.
+* **phase:** "mount" | "update" - Identifies whether the tree has just been mounted for the first time or re-rendered due to a change in props, state, or hooks.
+* **actualDuration:** number - Time spent rendering the Profiler and its descendants for the current update. This indicates how well the subtree makes use of memoization (e.g. React.memo, useMemo, shouldComponentUpdate). Ideally this value should decrease significantly after the initial mount as many of the descendants will only need to re-render if their specific props change.
+* **baseDuration:** number - Duration of the most recent render time for each individual component within the Profiler tree. This value estimates a worst-case cost of rendering (e.g. the initial mount or a tree with no memoization).
+* **startTime:** number - Timestamp when React began rendering the current update.
+* **commitTime:** number - Timestamp when React committed the current update. This value is shared between all profilers in a commit, enabling them to be grouped if desirable.
+* **interactions:** Set - Set of “interactions” that were being traced when the update was scheduled (e.g. when render or setState were called).
+
+> Note
+
+* Interactions can be used to identify the cause of an update, although the API for tracing them is still experimental.
