@@ -15,18 +15,48 @@
 * For example, to profile a `Navigation` component and its descendants:
 
 ```ts
-render() {
+render(
     <App>
         <Profiler id="Navigation" onRender={callback}>
             <Navigation {...props} />
         </Profiler>
         <Main {...props} />
     </App>
-}
+);
 ```
 
 * Multiple Profiler components can be used to measure different parts of an application:
 
 ```ts
-
+render(
+    <App>
+        <Profiler id="Navigation" onRender={callback}>
+            <Navigation {...props} />
+        </Profiler>
+        <Profiler id="Main" onRender={callback}>
+            <Main {...props} />
+        </Profiler>
+    </App>
+);
 ```
+
+* Profiler components can also be nested to measure different components within the same subtree:
+
+```ts
+render(
+    <App>
+        <Profiler id="Panel" onRender={callback}>
+            <Panel {...props}>
+                <Profiler id="Content" onRender={callback}>
+                    <Content {...props} />
+                </Profiler>
+                <Profiler id="PreviewPane" onRender={callback}>
+                    <PreviewPane {...props} />
+                </Profiler>
+            </Panel>
+        </Profiler>
+    </App>
+);
+```
+
+## `onRender` Callback
