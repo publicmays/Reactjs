@@ -14,3 +14,17 @@ If we used this in React, displaying 1000 elements would require in the order of
 1. The developer can hint at which child elements may be stable across different renders with a key prop.
 
 ## The Diffing Algorithm
+
+When diffing two trees, React first compares the two root elements. The behavior is different depending on the types of the root elements.
+
+### Elements Of Different Types
+
+Whenever the root elements have different types, React will tear down the old tree and build the new tree from scratch. Going from `<a>` to `<img>`, or from `<Article>` to `<Comment>`, or from `<Button>` to `<div>` - any of those will lead to a full rebuild.
+
+When tearing down a tree, old DOM nodes are destroyed. Component instances receive `componentWillUnmount()`. When building up a new tree, new DOM nodes are inserted into the DOM. Component instances receive `componentWillMount()` and then `componentDidMount()`. Any state associated with the old tree is lost.
+
+Any components below the root will also get unmounted and have their state destroyed. For example, when diffing:
+
+```ts
+
+```
