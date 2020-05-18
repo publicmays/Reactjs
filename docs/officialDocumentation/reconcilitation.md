@@ -107,3 +107,40 @@ If you implement it naively, inserting an element at the beginning has worse per
 React will mutate every child instead of realizing it can keep the `<li>Duke</li>` and `<li>Villanova</li>` subtrees intact. This inefficiency can be a problem.
 
 ### Keys
+
+In order to solve this issue, React supports a key attribute. When children have keys, React uses the key to match children in the original tree with children in the subsequent tree. For example, adding a key to our inefficient example above can make the tree conversion efficient:
+
+```ts
+<ul>
+  <li key="2015">Duke</li>
+  <li key="2016">Villanova</li>
+</ul>
+
+<ul>
+  <li key="2014">Connecticut</li>
+  <li key="2015">Duke</li>
+  <li key="2016">Villanova</li>
+</ul>
+```
+
+Now React knows that the element with key '2014' is the new one, and the elements with the keys '2015' and '2016' have just moved.
+
+In practice, finding a key is usually not hard. The element you are going to display may already have a unique ID, so the key can just come from your data:
+
+```ts
+<li key={item.id}>{item.name}</li>
+```
+
+When that’s not the case, you can add a new ID property to your model or hash some parts of the content to generate a key. The key only has to be unique among its siblings, not globally unique.
+
+As a last resort, you can pass an item’s index in the array as a key. This can work well if the items are never reordered, but reorders will be slow.
+
+Reorders can also cause issues with component state when indexes are used as keys. Component instances are updated and reused based on their key. If the key is an index, moving an item changes it. As a result, component state for things like uncontrolled inputs can get mixed up and updated in unexpected ways.
+
+Here is an example of the issues that can be caused by using indexes as keys on CodePen.
+
+[Code Pen](https://codepen.io/pen?&editable=true&editors=0010)
+
+
+
+Here is an updated version of the same example showing how not using indexes as keys will fix these reordering, sorting, and prepending issues.
