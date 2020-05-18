@@ -26,5 +26,15 @@ When tearing down a tree, old DOM nodes are destroyed. Component instances recei
 Any components below the root will also get unmounted and have their state destroyed. For example, when diffing:
 
 ```ts
+<div>
+    <Counter />
+</div>
 
+<span>
+    <Counter />
+</span>
 ```
+
+* This will destroy the old `Counter` and remount a new one.
+
+### DOM Elements Of The Same Type
