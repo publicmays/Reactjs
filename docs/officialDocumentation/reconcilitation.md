@@ -38,3 +38,72 @@ Any components below the root will also get unmounted and have their state destr
 * This will destroy the old `Counter` and remount a new one.
 
 ### DOM Elements Of The Same Type
+
+When comparing two React DOM elements of the same type, React looks at the attributes of both, keeps the same underlying DOM node, and only updates the changed attributes. For example:
+
+```ts
+<div className="before" title="stuff" />
+
+<div className="after" title="stuff" />
+```
+
+By comparing these two elements, React knows to only modify the `className` on the underlying DOM node.
+
+When updating `style`, React also knows to update only the properties that changed. For example:
+
+```ts
+<div style={{color: 'red', fontWeight: 'bold'}} />
+
+<div style={{color: 'green', fontWeight: 'bold'}} />
+```
+
+* When converting between these two elements, React knows to only modify the color style, not the `fontWeight`.
+
+* After handling the DOM node, React then recurses on the children.
+
+### Component Elements Of The Same Type
+
+When a component updates, the instance stays the same, so that state is maintained across renders. 
+
+* React updates the props of the underlying component instance to match the new element, and calls `componentWillReceiveProps()` and `componentWillUpdate()` on the underlying instance.
+* Next, the `render()` method is called and the diff algorithm recurses on the previous result and the new result.
+
+### Recursing On Children
+
+By default, when recursing on the children of a DOM node, React just iterates over both lists of children at the same time and generates a mutation whenever there’s a difference.
+
+For example, when adding an element at the end of the children, converting between these two trees works well:
+
+```ts
+<ul>
+  <li>first</li>
+  <li>second</li>
+</ul>
+
+<ul>
+  <li>first</li>
+  <li>second</li>
+  <li>third</li>
+</ul>
+```
+
+React will match the two `<li>first</li>` trees, match the two `<li>second</li>` trees, and then insert the `<li>third</li>` tree.
+
+If you implement it naively, inserting an element at the beginning has worse performance. For example, converting between these two trees works poorly:
+
+```ts
+<ul>
+  <li>Duke</li>
+  <li>Villanova</li>
+</ul>
+
+<ul>
+  <li>Connecticut</li>
+  <li>Duke</li>
+  <li>Villanova</li>
+</ul>
+```
+
+React will mutate every child instead of realizing it can keep the `<li>Duke</li>` and `<li>Villanova</li>` subtrees intact. This inefficiency can be a problem.
+
+### Keys
