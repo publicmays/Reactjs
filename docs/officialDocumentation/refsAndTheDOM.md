@@ -18,3 +18,12 @@
 
 * Your first inclination may be to use refs to “make things happen” in your app. If this is the case, take a moment and think more critically about where state should be owned in the component hierarchy. 
 * Often, it becomes clear that the proper place to “own” that state is at a higher level in the hierarchy. See the Lifting State Up guide for examples of this.
+
+## Creating Refs
+
+* Refs are created using React.createRef() and attached to React elements via the ref attribute. 
+* Refs are commonly assigned to an instance property when a component is constructed so they can be referenced throughout the component.
+
+```ts
+
+```
