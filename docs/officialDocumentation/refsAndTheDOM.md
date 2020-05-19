@@ -53,3 +53,44 @@ const node = this.myRef.current;
 * The examples below demonstrate the differences.
 
 ### Adding a Ref to a DOM Element
+
+* This code uses a `ref` to store a reference to a DOM node:
+
+```ts
+class CustomTextInput extends React.Component {
+    constructor(props) {
+        super(props);
+
+        // create a ref to store the textInput DOM element
+        this.textInput = React.createRef();
+        this.focusTextInput = this.focusTextInput.bind(this);
+    }
+
+    focusTextInput() {
+        // Explicitly focus the text input using the raw DOM API
+        // Note: we're accessing "current" to get the DOM node
+        this.textInput.current.focus();
+    }
+
+    render() {
+        return (
+            <div>
+                <input 
+                    type="text"
+                    ref={this.textInput} 
+                />
+                <input 
+                    type="button"
+                    value="Focus the text input"
+                    onClick={this.focusTextInput}
+                />
+            </div>
+        );
+    }
+}
+```
+
+* React will assign the current property with the DOM element when the component mounts, and assign it back to null when it unmounts. 
+* `ref` updates happen before `componentDidMount` or `componentDidUpdate` lifecycle methods.
+
+### Adding a Ref to a Class Component
