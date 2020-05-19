@@ -94,3 +94,32 @@ class CustomTextInput extends React.Component {
 * `ref` updates happen before `componentDidMount` or `componentDidUpdate` lifecycle methods.
 
 ### Adding a Ref to a Class Component
+
+* If we wanted to wrap the `CustomTextInput` above to simulate it being clicked immediately after mounting, we could use a `ref` to get access to the custom input and call its `focusTextInput` method manually:
+
+```ts
+class AutoFocusTextInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.textInput = React.createRef();
+    }
+    componentDidMount() {
+        this.textInput.current.focusTextInput();
+    }
+    render() {
+        return (
+            <CustonTextInput ref={this.textInput} />
+        );
+    }
+}
+```
+
+* Note that this only works if `CustomTextInput` is declared as a class:
+
+```ts
+class CustomTextInput extends React.Component {
+    // ...
+}
+```
+
+### Refs and Function Components
