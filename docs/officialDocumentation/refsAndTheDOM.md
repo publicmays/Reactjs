@@ -14,3 +14,7 @@
 
 * For example, instead of exposing `open()` and `close()` methods on a Dialog component, pass an `isOpen` prop to it.
 
+## Don’t Overuse Refs
+
+* Your first inclination may be to use refs to “make things happen” in your app. If this is the case, take a moment and think more critically about where state should be owned in the component hierarchy. 
+* Often, it becomes clear that the proper place to “own” that state is at a higher level in the hierarchy. See the Lifting State Up guide for examples of this.
