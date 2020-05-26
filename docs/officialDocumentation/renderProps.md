@@ -213,3 +213,33 @@ class MouseTracker extends React.Component {
     }
 }
 ```
+
+* Now, instead of effectively cloning the `<Mouse>` component and hard-coding something else in its render method to solve for a specific use case, we provide a render prop that `<Mouse>` can use to dynamically determine what it renders.
+
+* More concretely, a render prop is a function prop that a component uses to know what to render.
+
+* This technique makes the behavior that we need to share extremely portable. To get that behavior, render a `<Mouse>` with a render prop that tells it what to render with the current (x, y) of the cursor.
+
+* One interesting thing to note about render props is that you can implement most higher-order components (HOC) using a regular component with a render prop. For example, if you would prefer to have a withMouse HOC instead of a `<Mouse>` component, you could easily create one using a regular `<Mouse>` with a render prop:
+
+```ts
+// If you really want a HOC for some reason, you can easily
+// create one using a regular component with a render prop!
+function withMouse(Component) {
+    return class extends React.Component {
+        render() {
+            return (
+                <Mouse 
+                    render={mouse => (
+                        <Component {...this.props} mouse={mouse} />
+                    )}
+                />
+            );
+        }
+    }
+}
+```
+
+* So using a render prop makes it possible to use either pattern.
+
+## Using Props Other Than render
