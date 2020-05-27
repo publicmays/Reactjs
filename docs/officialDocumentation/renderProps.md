@@ -249,5 +249,68 @@ function withMouse(Component) {
 * Although the examples above use `render`, we could just as easily use the `children` prop!
 
 ```ts
+<Mouse children={mouse => (
+    <p>The mouse position is {mouse.x}, {mouse.y}</p>
+)} />
+```
 
+* And remember, the children prop doesn’t actually need to be named in the list of “attributes” in your JSX element. Instead, you can put it directly _inside_ the element!
+
+```ts
+<Mouse>
+    {
+        mouse => (
+            <p>
+                The mouse position is {mouse.x}, {mouse.y}
+            </p>
+    )}
+</Mouse>
+```
+
+* You’ll see this technique used in the react-motion API.
+
+* Since this technique is a little unusual, you’ll probably want to explicitly state that children should be a function in your `propTypes` when designing an API like this.
+
+```ts
+Mouse.propTypes = {
+    children: PropTypes.func.isRequired
+};
+```
+
+# Caveats
+
+## Be careful when using Render Props with React.PureComponent
+
+* Using a render prop can negate the advantage that comes from using `React.PureComponent` if you create the function inside a render method. This is because the shallow prop comparison will always return false for new props, and each render in this case will generate a new value for the render prop.
+
+* For example, continuing with our `<Mouse>` component from above, if Mouse were to extend `React.PureComponent` instead of `React.Component`, our example would look like this:
+
+```ts
+class Mouse extends React.PureComponent {
+    // Same implementationa as above...
+}
+
+class MouseTracker extends React.Component {
+    render() {
+        return (
+            <div>
+                <h1>Move the mouse around!</h1>
+                {/*
+                    This is bad! The value of `render` prop will be different on each render
+                */}
+                <Mouse render={mouse => (
+                    <Cat mouse={mouse} />
+                )} />
+            </div>
+        );
+    }
+}
+```
+
+* In this example, each time `<MouseTracker>` renders, it generates a new function as the value of the `<Mouse render>` prop, thus negating the effect of `<Mouse>` extending React.PureComponent in the first place!
+
+* To get around this problem, you can sometimes define the prop as an instance method, like so:
+
+```ts
+class MouseTracker extends React
 ```
