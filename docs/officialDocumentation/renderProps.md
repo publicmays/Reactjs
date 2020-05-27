@@ -243,3 +243,11 @@ function withMouse(Component) {
 * So using a render prop makes it possible to use either pattern.
 
 ## Using Props Other Than render
+
+* It’s important to remember that just because the pattern is called “render props” you don’t have to use a prop named render to use this pattern. In fact, any prop that is a function that a component uses to know what to render is technically a “render prop”.
+
+* Although the examples above use `render`, we could just as easily use the `children` prop!
+
+```ts
+
+```
