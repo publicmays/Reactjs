@@ -312,5 +312,22 @@ class MouseTracker extends React.Component {
 * To get around this problem, you can sometimes define the prop as an instance method, like so:
 
 ```ts
-class MouseTracker extends React
+class MouseTracker extends React.Component {
+    // Defined as an instance method, `this.renderTheCat` always
+    // refers to *same* function when we use it in render
+    renderTheCat(mouse) {
+        return <Cat mouse={mouse} />;
+    }
+
+    render() {
+        return (
+            <div>
+                <h1>Move the mouse around!</h1>
+                <Mouse render={this.renderTheCat} />
+            </div>
+        );
+    }
+}
 ```
+
+* In cases where you cannot define the prop statically (e.g. because you need to close over the component’s props and/or state) `<Mouse>` should extend React.Component instead.
