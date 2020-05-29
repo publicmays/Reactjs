@@ -150,5 +150,9 @@ npm i --save-dev @types/react
 * **Local Declarations** Sometimes the package that you want to use doesn’t bundle declarations nor is it available on DefinitelyTyped. In that case, we can have a local declaration file. To do this, create a declarations.d.ts file in the root of your source directory. A simple declaration could look like this:
 
 ```ts
-
+declare module 'querystring' {
+    export function stringify(val: object): string
+    export function parse(val: string): object
+}
 ```
+
