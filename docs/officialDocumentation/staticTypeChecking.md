@@ -94,6 +94,17 @@ Next, we’ll tell the compiler where our source code is and where the output sh
 ```ts
 // tsconfig.json
 {
-
+    "compilerOptions": {
+        // ...
+        "rootDir": "src",
+        "outDir": "build"
+        // ...
+    },
 }
 ```
+
+* Great! Now when we run our build script the compiler will output the generated javascript to the build folder. The TypeScript React Starter provides a tsconfig.json with a good set of rules to get you started.
+
+* Generally, you don’t want to keep the generated javascript in your source control, so be sure to add the build folder to your .gitignore.
+
+## File extensions
