@@ -108,3 +108,47 @@ Next, we’ll tell the compiler where our source code is and where the output sh
 * Generally, you don’t want to keep the generated javascript in your source control, so be sure to add the build folder to your .gitignore.
 
 ## File extensions
+
+* In React, you most likely write your components in a `.js` file. In TypeScript we have 2 file extensions:
+
+* `.ts` is the default file extension while `.tsx` is a special extension used for files which contain JSX.
+
+## Running TypeScript
+
+* If you followed the instructions above, you should be able to run TypeScript for the first time.
+
+```ts
+yarn build
+```
+
+* If you use npm, run:
+
+```ts
+npm run build
+```
+
+* If you see no output, it means that it completed successfully.
+
+## Type Definitions
+
+* To be able to show errors and hints from other packages, the compiler relies on declaration files. A declaration file provides all the type information about a library. This enables us to use javascript libraries like those on npm in our project.
+
+* There are two main ways to get declarations for a library:
+
+* **Bundled -** The library bundles its own declaration file. This is great for us, since all we need to do is install the library, and we can use it right away. To check if a library has bundled types, look for an `index.d.ts` file in the project. Some libraries will have it specified in their package.json under the typings or types field.
+
+* **DefinitelyTyped -** DefinitelyTyped is a huge repository of declarations for libraries that don’t bundle a declaration file. The declarations are crowd-sourced and managed by Microsoft and open source contributors. React for example doesn’t bundle its own declaration file. Instead we can get it from DefinitelyTyped. To do so enter this command in your terminal.
+
+```ts
+# yarn
+yarn add --dev @types/react
+
+# npm
+npm i --save-dev @types/react
+```
+
+* **Local Declarations** Sometimes the package that you want to use doesn’t bundle declarations nor is it available on DefinitelyTyped. In that case, we can have a local declaration file. To do this, create a declarations.d.ts file in the root of your source directory. A simple declaration could look like this:
+
+```ts
+
+```
