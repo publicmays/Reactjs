@@ -30,3 +30,70 @@ npx create-react-app my-app --template typescript
 * If you use Create React App, you can skip the rest of this page. It describes the manual setup which doesn’t apply to Create React App users.
 
 ## Adding TypeScript to a Project
+
+* It all begins with running one command in your terminal.
+
+* If you use Yarn, run:
+
+```ts
+yarn add --dev typescript
+```
+
+* If you use npm, run:
+
+```ts
+npm install --save-dev typescript
+```
+
+* Congrats! You’ve installed the latest version of TypeScript into your project. Installing TypeScript gives us access to the tsc command. Before configuration, let’s add tsc to the “scripts” section in our package.json:
+
+```ts
+{
+    // ...
+    "scripts": {
+        "build": "tsc",
+        // ...
+    },
+    // ...
+}
+```
+
+## Configuring the TypeScript Compiler
+
+* The compiler is of no help to us until we tell it what to do. In TypeScript, these rules are defined in a special file called tsconfig.json. To generate this file:
+
+* If you use Yarn, run:
+
+```ts
+yarn run tsc --init
+```
+
+If you use npm, run:
+
+```ts
+npx tsc --init
+```
+
+* Looking at the now generated tsconfig.json, you can see that there are many options you can use to configure the compiler. For a detailed description of all the options, check here.
+
+* Of the many options, we’ll look at rootDir and outDir. In its true fashion, the compiler will take in typescript files and generate javascript files. However we don’t want to get confused with our source files and the generated output.
+
+* We’ll address this in two steps:
+
+* Firstly, let’s arrange our project structure like this. We’ll place all our source code in the src directory.
+
+```ts
+├── package.json
+├── src
+│   └── index.ts 
+└── tsconfig.json
+```
+
+Next, we’ll tell the compiler where our source code is and where the output should go.
+
+```ts
+// tsconfig.json
+{
+
+}
+```
