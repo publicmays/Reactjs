@@ -49,5 +49,53 @@ function ExampleApplication() {
 * React 16.3 added a third option that offers the convenience of a string ref without any of the downsides:
 
 ```ts
+class MyComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.inputRef = React.createRef();
+    }
 
+    render() {
+        return <input type="text" ref={this.inputRef} />
+    }
+
+    componentDidMount() {
+        this.inputRef.current.focus();
+    }
+}
 ```
+
+* Since object refs were largely added as a replacement for string refs, strict mode now warns about usage of string refs.
+
+> Note:
+
+* Callback refs will continue to be supported in addition to the new createRef API.
+
+* You don’t need to replace callback refs in your components. They are slightly more flexible, so they will remain as an advanced feature.
+
+## Warning about deprecated findDOMNode usage
+
+* React used to support findDOMNode to search the tree for a DOM node given a class instance. Normally you don’t need this because you can attach a ref directly to a DOM node.
+
+* Therefore findDOMNode only worked if components always return a single DOM node that never changes.
+
+* You can instead make this explicit by passing a ref to your custom component and pass that along to the DOM using ref forwarding.
+
+* You can also add a wrapper DOM node in your component and attach a ref directly to it.
+
+```ts
+class MyComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.wrapper = React.createRef();
+    }
+
+    render() {
+        return <div ref={this.wrapper}>
+            {this.props.children}
+        </div>
+    }
+}
+```
+
+## Detecting unexpected side effects
