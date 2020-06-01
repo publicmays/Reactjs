@@ -39,3 +39,15 @@ function ExampleApplication() {
 ## Identifying unsafe lifecycles
 
 * When strict mode is enabled, React compiles a list of all class components using the unsafe lifecycles, and logs a warning message with information about these components, like so:
+
+![](https://reactjs.org/static/e4fdbff774b356881123e69ad88eda88/1628f/strict-mode-unsafe-lifecycles-warning.png)
+
+## Warning about legacy string ref API usage
+
+* Previously, React provided two ways for managing refs: the legacy string ref API and the callback API. Although the string ref API was the more convenient of the two, it had several downsides and so our official recommendation was to use the callback form instead.
+
+* React 16.3 added a third option that offers the convenience of a string ref without any of the downsides:
+
+```ts
+
+```
