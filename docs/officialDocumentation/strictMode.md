@@ -99,3 +99,55 @@ class MyComponent extends React.Component {
 ```
 
 ## Detecting unexpected side effects
+
+* Conceptually, React does work in two phases:
+
+* The **render** phase determines what changes need to be made to e.g. the DOM. During this phase, React calls render and then compares the result to the previous render.
+The commit phase is when React applies any changes. (In the case of React DOM, this is when React inserts, updates, and removes DOM nodes.) React also calls lifecycles like componentDidMount and componentDidUpdate during this phase.
+* The **commit** phase is usually very fast, but rendering can be slow. 
+
+* For this reason, the upcoming concurrent mode (which is not enabled by default yet) breaks the rendering work into pieces, pausing and resuming the work to avoid blocking the browser. This means that React may invoke render phase lifecycles more than once before committing, or it may invoke them without committing at all (because of an error or a higher priority interruption).
+
+* Render phase lifecycles include the following class component methods:
+
+* constructor
+* componentWillMount (or UNSAFE_componentWillMount)
+* componentWillReceiveProps (or UNSAFE_componentWillReceiveProps)
+* componentWillUpdate (or UNSAFE_componentWillUpdate)
+* getDerivedStateFromProps
+* shouldComponentUpdate
+* render
+* setState updater functions (the first argument)
+
+* Because the above methods might be called more than once, it’s important that they do not contain side-effects. Ignoring this rule can lead to a variety of problems, including memory leaks and invalid application state. Unfortunately, it can be difficult to detect these problems as they can often be non-deterministic.
+
+* Strict mode can’t automatically detect side effects for you, but it can help you spot them by making them a little more deterministic. This is done by intentionally double-invoking the following functions:
+
+* Class component constructor, render, and shouldComponentUpdate methods
+* Class component static getDerivedStateFromProps method
+* Function component bodies
+* State updater functions (the first argument to setState)
+* Functions passed to useState, useMemo, or useReducer
+
+> Note:
+
+* This only applies to development mode. Lifecycles will not be double-invoked in production mode.
+
+* Ex. consider the following code:
+
+```ts
+class TopLevelRoute extends React.Component {
+    constructor(props) {
+        super(props);
+        SharedApplicationState.recordEvent('ExampleCOmponent');
+    }
+}
+```
+
+* At first glance, this code might not seem problematic. But if SharedApplicationState.recordEvent is not idempotent, then instantiating this component multiple times could lead to invalid application state. This sort of subtle bug might not manifest during development, or it might do so inconsistently and so be overlooked.
+
+* By intentionally double-invoking methods like the component constructor, strict mode makes patterns like this easier to spot.
+
+## Detecting legacy context API
+
+![](https://reactjs.org/static/fca5c5e1fb2ef2e2d59afb100b432c12/51800/warn-legacy-context-in-strict-mode.png)
