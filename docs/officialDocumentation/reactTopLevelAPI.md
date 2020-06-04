@@ -17,3 +17,5 @@
 * React components can also be defined as functions which can be wrapped:
 
 * `React.memo`
+
+### Creating React Elements
