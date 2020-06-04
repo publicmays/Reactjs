@@ -19,3 +19,17 @@
 * `React.memo`
 
 ### Creating React Elements
+
+* We recommend using JSX to describe what your UI should look like. Each JSX element is just syntactic sugar for calling `React.createElement()`. You will not typically invoke the following methods directly if you are using JSX.
+
+* `createElement()`
+* `createFactory()`
+
+
+### Transforming Elements
+
+* React provides several APIs for manipulating elements:
+
+* `cloneElement()`
+* `isValidElement()`
+* `React.Children`
