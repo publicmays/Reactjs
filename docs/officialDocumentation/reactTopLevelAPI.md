@@ -36,3 +36,45 @@
 
 
 ### Fragments
+
+* React also provides a component for rendering multiple elements without a wrapper.
+
+* `React.Fragment`
+
+
+### Refs
+
+* `React.createRef`
+* `React.forwardRef`
+
+### Suspense
+
+* Suspense lets components “wait” for something before rendering. Today, Suspense only supports one use case: loading components dynamically with React.lazy. In the future, it will support other use cases like data fetching.
+
+* `React.lazy`
+* `React.Suspense`
+
+### Hooks
+* Hooks are a new addition in React 16.8. They let you use state and other React features without writing a class. Hooks have a dedicated docs section and a separate API reference:
+
+#### Basic Hooks
+
+```ts
+useState
+useEffect
+useContext
+```
+
+#### Additional Hooks
+
+```ts
+useReducer
+useCallback
+useMemo
+useRef
+useImperativeHandle
+useLayoutEffect
+useDebugValue
+```
+
+### Reference
