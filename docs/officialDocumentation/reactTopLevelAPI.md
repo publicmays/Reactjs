@@ -80,3 +80,15 @@ useDebugValue
 ### Reference
 
 #### React.Component
+
+* `React.Component` is the base class for React components when they are defined using ES6 classes:
+
+```ts
+class Greeting extends React.Component {
+    render() {
+        return <h1>Hello, {this.props.name} </h1>;
+    }
+}
+```
+
+#### React.PureComponent
