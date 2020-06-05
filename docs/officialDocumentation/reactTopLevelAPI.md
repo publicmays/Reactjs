@@ -78,3 +78,5 @@ useDebugValue
 ```
 
 ### Reference
+
+#### React.Component
