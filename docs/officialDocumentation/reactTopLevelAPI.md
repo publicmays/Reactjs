@@ -172,4 +172,10 @@ React.createElement(
 
 * This API was introduced as a replacement of the deprecated React.addons.cloneWithProps().
 
-#### createFactory()
+#### isValidElement()
+
+```ts
+React.isValidElement(object)
+```
+
+* Verifies the object is a React element. Returns true or false.
