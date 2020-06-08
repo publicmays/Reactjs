@@ -145,3 +145,13 @@ export default React.memo(MyComponent, areEqual);
 * Unlike the `shouldComponentUpdate()` method on class components, the areEqual function returns true if the props are equal and false if the props are not equal. This is the inverse from shouldComponentUpdate.
 
 #### createElement()
+
+```ts
+React.createElement(
+    type,
+    [props],
+    [...children]
+)
+```
+
+* Create and return a new React element of the given type. The type argument can be either a tag name string (such as 'div' or 'span'), a React component type (a class or a function), or a React fragment type.
