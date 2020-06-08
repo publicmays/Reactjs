@@ -179,3 +179,5 @@ React.isValidElement(object)
 ```
 
 * Verifies the object is a React element. Returns true or false.
+
+#### React.Children
