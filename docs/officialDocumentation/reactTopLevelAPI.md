@@ -155,3 +155,21 @@ React.createElement(
 ```
 
 * Create and return a new React element of the given type. The type argument can be either a tag name string (such as 'div' or 'span'), a React component type (a class or a function), or a React fragment type.
+
+#### cloneElement()
+
+* Clone and return a new React element using element as the starting point. The resulting element will have the original element’s props with the new props merged in shallowly. New children will replace existing children. key and ref from the original element will be preserved.
+
+* `React.cloneElement()` is almost equivalent to:
+
+```ts
+<element.type {...element.props} {...props}>
+    {children}
+</element.type>
+```
+
+* However, it also preserves refs. This means that if you get a child with a ref on it, you won’t accidentally steal it from your ancestor. You will get the same ref attached to your new element.
+
+* This API was introduced as a replacement of the deprecated React.addons.cloneWithProps().
+
+#### createFactory()
