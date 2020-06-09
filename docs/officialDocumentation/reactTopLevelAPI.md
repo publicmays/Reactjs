@@ -201,3 +201,27 @@ React.Chilren.map(children, function[(thisArg)])
 ```ts
 React.Children.forEach(children, function[(thisArg)])
 ```
+
+* Like `React.Children.map()` but does not return an array.
+
+### React.Children.count
+
+```ts
+React.Children.count(children)
+```
+
+* Returns the total number of components in children, equal to the number of times that a callback passed to map or forEach would be invoked.
+
+### React.Children.only
+
+```ts
+React.Children.only(children)
+```
+
+* Verifies that children has only one child (a React element) and returns it. Otherwise this method throws an error.
+
+> Note:
+
+* `React.Children.only()` does not accept the return value of `React.Children.map()` because it is an array rather than a React element.
+
+### React.Children.toArray
