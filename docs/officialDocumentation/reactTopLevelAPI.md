@@ -256,3 +256,79 @@ render() {
 #### React.createRef
 
 * `React.createRef` creates a ref that can be attached to React elements via the ref attribute.
+
+```ts
+class MyComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.inputRef = React.createRef();
+    }
+
+    render() {
+        return <input type="text" ref={this.inputRef} />;
+    }
+
+    componentDidMount() {
+        this.inputRef.current.focus();
+    }
+}
+```
+
+#### React.forwardRef
+
+* React.forwardRef creates a React component that forwards the ref attribute it receives to another component below in the tree. This technique is not very common but is particularly useful in two scenarios:
+
+1. Forwarding refs to DOM components
+1. Forwarding refs in higher-order-components
+
+* React.forwardRef accepts a rendering function as an argument.
+* React will call this function with props and ref as two arguments. This function should return a React node.
+
+```ts
+const FancyButton = React.forwardRef((props, ref) => (
+    <button ref={ref} className="FancyButton">
+        {props.children}
+    </button>
+));
+
+// You can now get a ref directly to the DOM button:
+const ref = React.createRef();
+<FancyButton ref={ref}>Click me!</FancyButton>;
+```
+
+* In the above example, React passes a ref given to `<FancyButton ref={ref}>` element as a second argument to the rendering function inside the React.forwardRef call. This rendering function passes the ref to the `<button ref={ref}>` element.
+
+* As a result, after React attaches the ref, ref.current will point directly to the `<button>` DOM element instance.
+
+#### React.lazy
+
+* `React.lazy()` lets you define a component that is loaded dynamically. This helps reduce the bundle size to delay loading components that aren’t used during the initial render.
+
+```ts
+// This component is loaded dynamically
+const SomeComponent = React.lazy(() => import ('./SomeComponent'))
+```
+
+* Note that rendering lazy components requires that there’s a `<React.Suspense>` component higher in the rendering tree. This is how you specify a loading indicator.
+
+#### React.Suspense
+
+* React.Suspense lets you specify the loading indicator in case some components in the tree below it are not yet ready to render. Today, lazy loading components is the only use case supported by `<React.Suspense>`:
+
+```ts
+// This component is loaded dynamically
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+function MyComponent() {
+    return (
+        // Displays <Spinner> until OtherComponent loads
+        <React.Suspense fallback={<Spinner />}>
+            <div>
+                <OtherComponent />
+            </div>
+        </React.Suspense>
+    );
+}
+```
+
+* It is documented in our code splitting guide. Note that lazy components can be deep inside the Suspense tree — it doesn’t have to wrap every one of them. The best practice is to place `<Suspense>` where you want to see a loading indicator, but to use lazy() wherever you want to do code splitting.
