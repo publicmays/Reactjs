@@ -244,7 +244,15 @@ React.Children.toArray(children)
 render() {
     return (
         <React.Fragment>
+            Some text.
+            <h2>A heading</h2>
         </React.Fragment>
     );
 }
 ```
+
+* You can also use it with the shorthand `<></>` syntax.
+
+#### React.createRef
+
+* `React.createRef` creates a ref that can be attached to React elements via the ref attribute.
