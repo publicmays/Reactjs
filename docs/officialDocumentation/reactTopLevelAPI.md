@@ -195,3 +195,9 @@ React.Chilren.map(children, function[(thisArg)])
 > Note
 
 * If children is a Fragment it will be treated as a single child and not traversed.
+
+### React.Children.forEach
+
+```ts
+React.Children.forEach(children, function[(thisArg)])
+```
