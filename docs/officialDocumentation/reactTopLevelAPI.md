@@ -181,3 +181,17 @@ React.isValidElement(object)
 * Verifies the object is a React element. Returns true or false.
 
 #### React.Children
+
+* React.Children provides utilities for dealing with the `this.props.children` opaque data structure.
+
+### React.Children.map
+
+```ts
+React.Chilren.map(children, function[(thisArg)])
+```
+
+* Invokes a function on every immediate child contained within children with this set to thisArg. If children is an array it will be traversed and the function will be called for each child in the array. If children is null or undefined, this method will return null or undefined rather than an array.
+
+> Note
+
+* If children is a Fragment it will be treated as a single child and not traversed.
