@@ -31,3 +31,15 @@ class Welcome extends React.Component {
 * **render()**
 * **componentDidMount()**
 
+### Updating
+
+* An update can be caused by changes to props or state. These methods are called in the following order when a component is being re-rendered:
+
+
+* static getDerivedStateFromProps()
+* shouldComponentUpdate()
+* **render()**
+* getSnapshotBeforeUpdate()
+* **componentDidUpdate()**
+
+### Unmounting
