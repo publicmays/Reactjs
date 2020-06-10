@@ -69,3 +69,7 @@ class Welcome extends React.Component {
 ### Instance Properties
 * props
 * state
+
+## Reference
+
+### Commonly Used Lifecycle Methods
