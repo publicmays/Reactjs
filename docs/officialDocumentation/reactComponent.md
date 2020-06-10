@@ -23,3 +23,11 @@ class Welcome extends React.Component {
 * [Diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
 
 ### Mounting
+
+* These methods are called in the following order when an instance of a component is being created and inserted into the DOM:
+
+* **constructor()**
+* static getDerivedStateFromProps()
+* **render()**
+* **componentDidMount()**
+
