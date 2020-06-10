@@ -43,3 +43,9 @@ class Welcome extends React.Component {
 * **componentDidUpdate()**
 
 ### Unmounting
+
+* This method is called when a component is being removed from the DOM:
+
+* **componentWillUnmount()**
+
+### Error Handling
