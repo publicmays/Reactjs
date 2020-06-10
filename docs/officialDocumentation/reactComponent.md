@@ -61,3 +61,11 @@ class Welcome extends React.Component {
 
 * setState()
 * forceUpdate()
+
+### Class Properties
+* defaultProps
+* displayName
+
+### Instance Properties
+* props
+* state
