@@ -49,3 +49,15 @@ class Welcome extends React.Component {
 * **componentWillUnmount()**
 
 ### Error Handling
+
+* These methods are called when there is an error during rendering, in a lifecycle method, or in the constructor of any child component.
+
+* static getDerivedStateFromError()
+* componentDidCatch()
+
+### Other APIs
+
+* Each component also provides some other APIs:
+
+* setState()
+* forceUpdate()
