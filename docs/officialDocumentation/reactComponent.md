@@ -181,3 +181,13 @@ componentDidUpdate(prevProps) {
 * `componentDidUpdate()` will not be invoked if `shouldComponentUpdate()` returns false.
 
 #### componentWillUnmount()
+
+```ts
+componentWillUnmount()
+```
+
+* `componentWillUnmount()` is invoked immediately before a component is unmounted and destroyed. Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in `componentDidMount()`.
+
+You should not call `setState()` in `componentWillUnmount()` because the component will never be re-rendered. Once a component instance is unmounted, it will never be mounted again.
+
+### Error boundaries
