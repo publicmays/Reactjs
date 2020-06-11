@@ -73,3 +73,9 @@ class Welcome extends React.Component {
 ## Reference
 
 ### Commonly Used Lifecycle Methods
+
+#### render()
+
+```ts
+render()
+```
