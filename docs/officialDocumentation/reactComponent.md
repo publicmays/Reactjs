@@ -99,3 +99,48 @@ render()
 * `render()` will not be invoked if `shouldComponentUpdate()` returns false.
 
 #### constructor()
+
+```ts
+constructor(props)
+```
+
+* **If you don’t initialize state and you don’t bind methods, you don’t need to implement a constructor for your React component.**
+
+* The constructor for a React component is called before it is mounted. When implementing the constructor for a React.Component subclass, you should call super(props) before any other statement. Otherwise, this.props will be undefined in the constructor, which can lead to bugs.
+
+* Typically, in React constructors are only used for two purposes:
+
+* Initializing local state by assigning an object to this.state.
+* Binding event handler methods to an instance.
+* You should not call `setState()` in the `constructor()`. Instead, if your component needs to use local state, assign the initial state to this.state directly in the constructor:
+
+```ts
+constructor(props) {
+    super(props);
+    // Do't call this.setState() here!
+    this.state = { counter: 0 };
+    this.handleClick = this.handleClick.bind(this);
+}
+```
+
+* Constructor is the only place where you should assign this.state directly. In all other methods, you need to use this.setState() instead.
+
+* Avoid introducing any side-effects or subscriptions in the constructor. For those use cases, use componentDidMount() instead.
+
+> Note:
+
+Avoid copying props into state! This is a common mistake:
+
+```ts
+constructor(props) {
+    super(props);
+    // Don't do this!
+    this.state = { color: props.color };
+}
+```
+
+* The problem is that it’s both unnecessary (you can use `this.props.color` directly instead), and creates bugs (updates to the color prop won’t be reflected in the state).
+
+* Only use this pattern if you intentionally want to ignore prop updates. In that case, it makes sense to rename the prop to be called initialColor or defaultColor. You can then force a component to “reset” its internal state by changing its key when necessary.
+
+#### componentDidMount()
