@@ -282,3 +282,7 @@ class ErrorBoundary extends React.Component {
 ```
 
 ### Other APIs
+
+* Unlike the lifecycle methods above (which React calls for you), the methods below are the methods you can call from your components.
+
+#### setState()
