@@ -321,3 +321,30 @@ this.setState((state, props) => {
 ```ts
 setState(stateChange[, callback])
 ```
+
+* This performs a shallow merge of stateChange into the new state, e.g., to adjust a shopping cart item quantity:
+
+```ts
+this.setState({quantity: 2})
+```
+
+* This form of `setState()` is also asynchronous, and multiple calls during the same cycle may be batched together. For example, if you attempt to increment an item quantity more than once in the same cycle, that will result in the equivalent of:
+
+```ts
+Object.assign(
+    previousState, 
+    {quantity: state.quantity + 1},
+    {quantity: state.quantity + 1},
+    ...
+)
+```
+
+* Subsequent calls will override values from previous calls in the same cycle, so the quantity will only be incremented once. If the next state depends on the current state, we recommend using the updater function form, instead:
+
+```ts
+this.setState((state) => {
+    return {quantity: state.quantity + 1};
+});
+```
+
+#### forceUpdate()
