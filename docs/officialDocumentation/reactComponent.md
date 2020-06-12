@@ -238,3 +238,47 @@ class ErrorBoundary extends React.Component {
 * `getDerivedStateFromError()` is called during the “render” phase, so side-effects are not permitted. For those use cases, use `componentDidCatch()` instead.
 
 #### componentDidCatch()
+
+```ts
+componentDidCatch(error, info)
+```
+
+* This lifecycle is invoked after an error has been thrown by a descendant component. It receives two parameters:
+
+1. error - The error that was thrown.
+1. info - An object with a componentStack key containing information about which component threw the error.
+
+* `componentDidCatch()` is called during the “commit” phase, so side-effects are permitted. It should be used for things like logging errors:
+
+```ts
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+
+    static getDerivedStateFromError(error) {
+        // Update state so the next render will show the fallback UI.
+        return { hasError: true };
+    }
+
+    componentDidCatch(error, info) {
+        // Example "componentStack":
+        //   in ComponentThatThrows (created by App)
+        //   in ErrorBoundary (created by App)
+        //   in div (created by App)
+        //   in App
+        logComponentStackToMyService(info.componentStack);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return <h1>Something went wrong.</h1>
+        }
+
+        return this.props.children;
+    }
+}
+```
+
+### Other APIs
