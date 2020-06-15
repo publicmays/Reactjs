@@ -392,3 +392,9 @@ return <CustonButton color={null} />; // props.color will remain null
 ### Instance Properties
 
 #### props
+
+* this.props contains the props that were defined by the caller of this component. See Components and Props for an introduction to props.
+
+* In particular, this.props.children is a special prop, typically defined by the child tags in the JSX expression rather than in the tag itself.
+
+#### state
