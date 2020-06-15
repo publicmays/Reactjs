@@ -398,3 +398,9 @@ return <CustonButton color={null} />; // props.color will remain null
 * In particular, this.props.children is a special prop, typically defined by the child tags in the JSX expression rather than in the tag itself.
 
 #### state
+
+* The state contains data specific to this component that may change over time. The state is user-defined, and it should be a plain JavaScript object.
+
+* If some value isn’t used for rendering or data flow (for example, a timer ID), you don’t have to put it in the state. Such values can be defined as fields on the component instance.
+
+* Never mutate `this.state` directly, as calling `setState()` afterwards may replace the mutation you made. Treat `this.state` as if it were immutable.
