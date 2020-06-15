@@ -360,3 +360,5 @@ component.forceUpdate(callback)
 * Normally you should try to avoid all uses of forceUpdate() and only read from this.props and this.state in render().
 
 ### Class Properties
+
+#### defaultProps
