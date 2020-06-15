@@ -362,3 +362,29 @@ component.forceUpdate(callback)
 ### Class Properties
 
 #### defaultProps
+
+* defaultProps can be defined as a property on the component class itself, to set the default props for the class. This is used for undefined props, but not for null props. For example:
+
+```ts
+class CustomButton extends React.Component {
+    // ...
+}
+
+CustomButton.defaultProps = {
+    color: 'blue'
+};
+```
+
+```ts
+render() {
+    return <CustonButton />; // props.color will be set to blue
+}
+```
+
+```ts
+return <CustonButton color={null} />; // props.color will remain null
+```
+
+#### displayName
+
+* The displayName string is used in debugging messages. Usually, you don’t need to set it explicitly because it’s inferred from the name of the function or class that defines the component. You might want to set it explicitly if you want to display a different name for debugging purposes or when you create a higher-order component, see Wrap the Display Name for Easy Debugging for details.
