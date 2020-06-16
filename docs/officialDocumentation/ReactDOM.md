@@ -52,4 +52,10 @@ ReactDOM.unmountComponentAtNode(container)
 
 * Remove a mounted React component from the DOM and clean up its event handlers and state. If no component was mounted in the container, calling this function does nothing. Returns true if a component was unmounted and false if there was no component to unmount.
 
-### findDOMNode()
+### createPortal()
+
+```ts
+ReactDOM.createPortal(child, container)
+```
+
+* Creates a portal. Portals provide a way to render children into a DOM node that exists outside the hierarchy of the DOM component.
