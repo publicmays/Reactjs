@@ -29,3 +29,7 @@ ReactDOM.render(element, container[, callback])
 * If the optional callback is provided, it will be executed after the component is rendered or updated.
 
 ### hydrate()
+
+```ts
+ReactDOM.hydrate(element, container[, callback])
+```
