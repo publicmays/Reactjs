@@ -27,3 +27,9 @@ renderToStaticNodeStream()
 ```
 
 # Reference
+
+## renderToString()
+
+```ts
+
+```
