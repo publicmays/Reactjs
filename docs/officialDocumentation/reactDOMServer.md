@@ -39,3 +39,13 @@ ReactDOMServer.renderToString(element)
 * If you call `ReactDOM.hydrate()` on a node that already has this server-rendered markup, React will preserve it and only attach event handlers, allowing you to have a very performant first-load experience.
 
 ## renderToStaticMarkup()
+
+```ts
+ReactDOMServer.renderToStaticMarkup(element)
+```
+
+* Similar to renderToString, except this doesn’t create extra DOM attributes that React uses internally, such as data-reactroot. This is useful if you want to use React as a simple static page generator, as stripping away the extra attributes can save some bytes.
+
+* If you plan to use React on the client to make the markup interactive, do not use this method. Instead, use renderToString on the server and `ReactDOM.hydrate()` on the client.
+
+## renderToNodeStream()
