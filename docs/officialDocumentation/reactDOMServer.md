@@ -65,3 +65,19 @@ ReactDOMServer.renderToNodeStream(element)
 * The stream returned from this method will return a byte stream encoded in utf-8. 
 
 ## renderToStaticNodeStream()
+
+```ts
+ReactDOMServer.enderToStaticNodeStream(element)
+```
+
+* Similar to renderToNodeStream, except this doesn’t create extra DOM attributes that React uses internally, such as data-reactroot. This is useful if you want to use React as a simple static page generator, as stripping away the extra attributes can save some bytes.
+
+* The HTML output by this stream is exactly equal to what `ReactDOMServer.renderToStaticMarkup` would return.
+
+* If you plan to use React on the client to make the markup interactive, do not use this method. Instead, use renderToNodeStream on the server and `ReactDOM.hydrate()` on the client.
+
+> Note:
+
+* Server-only. This API is not available in the browser.
+
+* The stream returned from this method will return a byte stream encoded in utf-8. 
