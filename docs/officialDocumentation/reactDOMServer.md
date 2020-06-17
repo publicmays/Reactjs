@@ -14,9 +14,16 @@ var ReactDOMServer = react('react-dom/server');
 
 * The following methods can be used in both the server and browser environments:
 
+```ts
 renderToString()
 renderToStaticMarkup()
-These additional methods depend on a package (stream) that is only available on the server, and won’t work in the browser.
+```
 
+* These additional methods depend on a package (stream) that is only available on the server, and won’t work in the browser.
+
+```ts
 renderToNodeStream()
 renderToStaticNodeStream()
+```
+
+# Reference
