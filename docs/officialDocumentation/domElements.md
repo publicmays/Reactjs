@@ -19,3 +19,7 @@
 * If you use React with Web Components (which is uncommon), use the class attribute instead.
 
 ### htmlFor
+
+* Since for is a reserved word in JavaScript, React elements use htmlFor instead.
+
+### onChange
