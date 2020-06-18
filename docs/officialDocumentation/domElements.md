@@ -30,3 +30,4 @@
 
 * The selected attribute is supported by `<option>` components. You can use it to set whether the component is selected. This is useful for building controlled components.
 
+### style
