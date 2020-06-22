@@ -30,3 +30,5 @@ Simulate
 ```
 
 ## Reference
+
+### act()
