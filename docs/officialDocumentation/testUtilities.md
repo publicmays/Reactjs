@@ -117,11 +117,10 @@ it('can render and update a counter', () => {
 
 * The recipes document contains more details on how act() behaves, with examples and usage.
 
-### mockComponent()
+### isElement()
 
 ```ts
-mockComponent(
-    componentClass,
-    [mockTagName]
-)
+    isElement(element)
 ```
+
+* Returns true if element is any React element.
