@@ -145,3 +145,11 @@ isDOMComponent(instance)
 * Returns true if instance is a DOM component (such as a `<div>` or `<span>`).
 
 ### isCompositeComponent()
+
+```ts
+isCompositeComponent(instance)
+```
+
+* Returns true if instance is a user-defined component, such as a class or a function.
+
+### isCompositeComponentWithType()
