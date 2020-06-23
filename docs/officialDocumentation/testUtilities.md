@@ -136,4 +136,12 @@ isElementOfType(
 
 * Returns true if element is a React element whose type is of a React componentClass.
 
-#### isDOMComponent()
+### isDOMComponent()
+
+```ts
+isDOMComponent(instance)
+```
+
+* Returns true if instance is a DOM component (such as a `<div>` or `<span>`).
+
+### isCompositeComponent()
