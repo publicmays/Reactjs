@@ -118,3 +118,10 @@ it('can render and update a counter', () => {
 * The recipes document contains more details on how act() behaves, with examples and usage.
 
 ### mockComponent()
+
+```ts
+mockComponent(
+    componentClass,
+    [mockTagName]
+)
+```
