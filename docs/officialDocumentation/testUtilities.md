@@ -124,3 +124,5 @@ it('can render and update a counter', () => {
 ```
 
 * Returns true if element is any React element.
+
+### isElementOfType()
