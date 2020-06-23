@@ -120,9 +120,20 @@ it('can render and update a counter', () => {
 ### isElement()
 
 ```ts
-    isElement(element)
+isElement(element)
 ```
 
 * Returns true if element is any React element.
 
 ### isElementOfType()
+
+```ts
+isElementOfType(
+    element,
+    componentClass
+)
+```
+
+* Returns true if element is a React element whose type is of a React componentClass.
+
+#### isDOMComponent()
