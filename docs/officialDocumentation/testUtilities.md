@@ -153,3 +153,25 @@ isCompositeComponent(instance)
 * Returns true if instance is a user-defined component, such as a class or a function.
 
 ### isCompositeComponentWithType()
+
+```ts
+isCompositeComponentWithType(
+    instance,
+    componentClass
+)
+```
+
+* Returns true if instance is a component whose type is of a React componentClass.
+
+### findAllInRenderedTree()
+
+```ts
+findAllInRenderedTree(
+    tree,
+    test
+)
+```
+
+* Traverse all components in tree and accumulate all components where test(component) is true. This is not that useful on its own, but it’s used as a primitive for other test utils.
+
+### scryRenderedDOMComponentsWithClass()
