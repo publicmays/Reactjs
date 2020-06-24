@@ -241,3 +241,20 @@ findRenderedComponentWithType(
 * Same as scryRenderedComponentsWithType() but expects there to be one result and returns that one result, or throws exception if there is any other number of matches besides one.
 
 ### renderIntoDocument()
+
+```ts
+renderIntoDocument(element)
+```
+
+* Render a React element into a detached DOM node in the document. This function requires a DOM. It is effectively equivalent to:
+
+```ts
+const domContainer = document.createElement('div');
+ReactDOM.render(element, domContainer);
+```
+
+> Note:
+
+* You will need to have window, window.document and window.document.createElement globally available before you import React. Otherwise React will think it can’t access the DOM and methods like setState won’t work.
+
+## Other Utilities
