@@ -260,3 +260,34 @@ ReactDOM.render(element, domContainer);
 ## Other Utilities
 
 ### Simulate
+
+```ts
+Simulate.{eventName}(
+    element,
+    [eventData]
+)
+```
+
+* Simulate an event dispatch on a DOM node with optional eventData event data.
+
+* Simulate has a method for every event that React understands.
+
+### Clicking an element
+
+```ts
+// <button ref={(node) => this.button = node}>...</button>
+const node = this.button;
+ReactTestUtils.Simulate.click(node);
+```
+
+### Changing the value of an input field and then pressing ENTER.
+
+```ts
+// <input ref={(node) => this.textInput = node} />
+const node = this.textInput;
+node.value = 'giraffe';
+ReactTestUtils.Simulate.change(node);
+ReactTestUtils.Simulate.keyDown(
+    node, 
+    {key: "Enter", keyCode: 13, which: 13});
+```
