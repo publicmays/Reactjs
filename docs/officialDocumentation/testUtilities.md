@@ -186,3 +186,14 @@ scryRenderedDOMComponentsWithClass(
 * Finds all DOM elements of components in the rendered tree that are DOM components with the class name matching className.
 
 ### findRenderedDOMComponentWithClass()
+
+```ts
+findRenderedDOMComponentWithClass(
+    tree,
+    className
+)
+```
+
+* Like scryRenderedDOMComponentsWithClass() but expects there to be one result, and returns that one result, or throws exception if there is any other number of matches besides one.
+
+### scryRenderedDOMComponentsWithTag()
