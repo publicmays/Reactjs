@@ -208,3 +208,25 @@ scryRenderedDOMComponentsWithTag(
 * Finds all DOM elements of components in the rendered tree that are DOM components with the tag name matching tagName.
 
 ### findRenderedDOMComponentWithTag()
+
+```ts
+findRenderedDOMComponentWithTag(
+    tree,
+    tagName
+)
+```
+
+* Like scryRenderedDOMComponentsWithTag() but expects there to be one result, and returns that one result, or throws exception if there is any other number of matches besides one.
+
+### scryRenderedComponentsWithType()
+
+```ts
+scryRenderedComponentsWithType(
+    tree,
+    componentClass
+)
+```
+
+* Finds all instances of components with type equal to componentClass.
+
+### findRenderedComponentWithType()
