@@ -230,3 +230,14 @@ scryRenderedComponentsWithType(
 * Finds all instances of components with type equal to componentClass.
 
 ### findRenderedComponentWithType()
+
+```ts
+findRenderedComponentWithType(
+    tree,
+    componentClass
+)
+```
+
+* Same as scryRenderedComponentsWithType() but expects there to be one result and returns that one result, or throws exception if there is any other number of matches besides one.
+
+### renderIntoDocument()
