@@ -69,3 +69,28 @@ TestRenderer.act()
 ```
 
 ## TestRenderer instance
+
+```ts
+testRenderer.toJSON()
+testRenderer.toTree()
+testRenderer.update()
+testRenderer.unmount()
+testRenderer.getInstance()
+testRenderer.root
+```
+
+## TestInstance
+
+```ts
+testInstance.find()
+testInstance.findByType()
+testInstance.findByProps()
+testInstance.findAll()
+testInstance.findAllByType()
+testInstance.findAllByProps()
+testInstance.instance
+testInstance.type
+testInstance.props
+testInstance.parent
+testInstance.children
+```
