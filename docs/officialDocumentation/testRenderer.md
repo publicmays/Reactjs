@@ -62,3 +62,10 @@ expect(testInstance.findByProps({className: "Sub"}).children).toEqual(['Sub']);
 ```
 
 ## TestRenderer
+
+```ts
+TestRenderer.create()
+TestRenderer.act()
+```
+
+## TestRenderer instance
