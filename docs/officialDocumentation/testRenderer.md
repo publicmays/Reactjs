@@ -105,3 +105,10 @@ TestRenderer.create(element, options);
 
 * Create a TestRenderer instance with the passed React element. It doesn’t use the real DOM, but it still fully renders the component tree into memory so you can make assertions about it. Returns a TestRenderer instance.
 
+## TestRenderer.act()
+
+```ts
+TestRenderer.act(callback)
+```
+
+* Similar to the act() helper from react-dom/test-utils, TestRenderer.act prepares a component for assertions. Use this version of act() to wrap calls to TestRenderer.create and testRenderer.update.
