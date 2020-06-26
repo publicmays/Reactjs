@@ -152,3 +152,11 @@ testRenderer.toTree()
 * Return an object representing the rendered tree. The representation is more detailed than the one provided by toJSON(), and includes the user-written components. You probably don’t need this method unless you’re writing your own assertion library on top of the test renderer.
 
 ## testRenderer.update()
+
+```ts
+testRenderer.update(element)
+```
+
+* Re-render the in-memory tree with a new root element. This simulates a React update at the root. If the new element has the same type and key as the previous element, the tree will be updated; otherwise, it will re-mount a new tree.
+
+## testRenderer.unmount()
