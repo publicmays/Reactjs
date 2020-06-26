@@ -136,3 +136,10 @@ expect(root.toJSON()).toMatchSnapshot();
 ```
 
 ## testRenderer.toJSON()
+
+```ts
+testRenderer.toJSON()
+```
+
+* Return an object representing the rendered tree. This tree only contains the platform-specific nodes like <div> or <View> and their props, but doesn’t contain any user-written components. This is handy for snapshot testing.
+
