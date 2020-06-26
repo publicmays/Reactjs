@@ -143,3 +143,12 @@ testRenderer.toJSON()
 
 * Return an object representing the rendered tree. This tree only contains the platform-specific nodes like <div> or <View> and their props, but doesn’t contain any user-written components. This is handy for snapshot testing.
 
+## testRenderer.toTree()
+
+```ts
+testRenderer.toTree()
+```
+
+* Return an object representing the rendered tree. The representation is more detailed than the one provided by toJSON(), and includes the user-written components. You probably don’t need this method unless you’re writing your own assertion library on top of the test renderer.
+
+## testRenderer.update()
