@@ -215,3 +215,4 @@ testInstance.findAll(test)
 
 * Find all descendant test instances for which `test(testInstance)` returns true.
 
+## testInstance.findAllByType()
