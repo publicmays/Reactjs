@@ -191,3 +191,11 @@ testInstance.find(test)
 
 * Find a single descendant test instance for which test(testInstance) returns true. If test(testInstance) does not return true for exactly one test instance, it will throw an error.
 
+## testInstance.findByType()
+
+```ts
+testInstance.findByType(type)
+```
+
+* Find a single descendant test instance with the provided type. If there is not exactly one test instance with the provided type, it will throw an error.
+
