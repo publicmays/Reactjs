@@ -168,3 +168,18 @@ testRenderer.unmount()
 * Unmount the in-memory tree, triggering the appropriate lifecycle events
 
 ## testRenderer.getInstance()
+
+```ts
+testRenderer.getInstance()
+```
+
+* Return the instance corresponding to the root element, if available. This will not work if the root element is a function component because they don’t have instances.
+
+## testRenderer.root
+
+```ts
+testRenderer.root
+```
+
+* Returns the root “test instance” object that is useful for making assertions about specific nodes in the tree. You can use it to find other “test instances” deeper below.
+
