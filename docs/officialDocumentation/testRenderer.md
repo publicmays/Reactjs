@@ -183,3 +183,11 @@ testRenderer.root
 
 * Returns the root “test instance” object that is useful for making assertions about specific nodes in the tree. You can use it to find other “test instances” deeper below.
 
+## testInstance.find()
+
+```ts
+testInstance.find(test)
+```
+
+* Find a single descendant test instance for which test(testInstance) returns true. If test(testInstance) does not return true for exactly one test instance, it will throw an error.
+
