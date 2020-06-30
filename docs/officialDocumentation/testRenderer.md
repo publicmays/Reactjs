@@ -256,3 +256,17 @@ testInstance.props
 * The props corresponding to this test instance. For example, a `<Button size="small" />` component has `{size: 'small'}` as props.
 
 ## testInstance.parent
+
+```ts
+testInstance.parent
+```
+
+* The parent test instance of this test instance.
+
+## testInstance.children
+
+```ts
+testInstance.children
+```
+
+* The children test instances of this test instance.
