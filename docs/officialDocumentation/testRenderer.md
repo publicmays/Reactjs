@@ -239,3 +239,16 @@ testInstance.instance
 
 * The component instance corresponding to this test instance. It is only available for class components, as function components don’t have instances. It matches the this value inside the given component.
 
+## testInstance.type
+
+```ts
+testInstance.type
+```
+
+* The component type corresponding to this test instance. For example, a `<Button />` component has a type of Button.
+
+## testInstance.props
+
+```ts
+testInstance.props
+```
