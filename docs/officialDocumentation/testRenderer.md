@@ -216,3 +216,18 @@ testInstance.findAll(test)
 * Find all descendant test instances for which `test(testInstance)` returns true.
 
 ## testInstance.findAllByType()
+
+```ts
+testInstance.findAllByType(type)
+```
+
+* Find all descendant test instances with the provided type.
+
+## testInstance.findAllByProps()
+
+```ts
+testInstance.findAllByProps(props)
+```
+
+* Find all descendant test instances with the provided props.
+
