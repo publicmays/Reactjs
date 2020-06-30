@@ -270,3 +270,8 @@ testInstance.children
 ```
 
 * The children test instances of this test instance.
+
+## Ideas
+
+* You can pass `createNodeMock` function to `TestRenderer.create` as the option, which allows for custom mock refs. `createNodeMock` accepts the current element and should return a mock ref object. This is useful when you test a component that relies on refs.
+
