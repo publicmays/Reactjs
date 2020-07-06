@@ -135,3 +135,26 @@ An input form element whose value is controlled by React is called a controlled 
 * In most cases you should use controlled components.
 
 ## Keys
+
+* A “key” is a special string attribute you need to include when creating arrays of elements. Keys help React identify which items have changed, are added, or are removed. Keys should be given to the elements inside an array to give the elements a stable identity.
+
+* Keys only need to be unique among sibling elements in the same array. They don’t need to be unique across the whole application or even a single component.
+
+* Don’t pass something like Math.random() to keys. It is important that keys have a “stable identity” across re-renders so that React can determine when items are added, removed, or re-ordered. Ideally, keys should correspond to unique and stable identifiers coming from your data, such as `post.id`.
+
+## Refs
+
+* React supports a special attribute that you can attach to any component. The ref attribute can be an object created by React.createRef() function or a callback function, or a string (in legacy API). When the ref attribute is a callback function, the function receives the underlying DOM element or class instance (depending on the type of element) as its argument. This allows you to have direct access to the DOM element or component instance.
+
+* Use refs sparingly. If you find yourself often using refs to “make things happen” in your app, consider getting more familiar with top-down data flow.
+
+## Events
+
+* Handling events with React elements has some syntactic differences:
+
+1. React event handlers are named using camelCase, rather than lowercase.
+1. With JSX you pass a function as the event handler, rather than a string.
+
+## Reconciliation
+
+* When a component’s props or state change, React decides whether an actual DOM update is necessary by comparing the newly returned element with the previously rendered one. When they are not equal, React will update the DOM. This process is called “reconciliation”.
