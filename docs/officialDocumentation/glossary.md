@@ -121,3 +121,7 @@ class Welcome extends React.Component {
 * For each particular piece of changing data, there should be just one component that “owns” it in its state. Don’t try to synchronize states of two different components. Instead, lift it up to their closest shared ancestor, and pass it down as props to both of them.
 
 ## Lifecycle Methods
+
+* Lifecycle methods are custom functionality that gets executed during the different phases of a component. There are methods available when the component gets created and inserted into the DOM (mounting), when the component updates, and when the component gets unmounted or removed from the DOM.
+
+## Controlled vs. Uncontrolled Components
