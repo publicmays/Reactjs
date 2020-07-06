@@ -23,3 +23,7 @@
 * Package managers are tools that allow you to manage dependencies in your project. npm and Yarn are two package managers commonly used in React applications. Both of them are clients for the same npm package registry.
 
 ## CDN
+
+* CDN stands for Content Delivery Network. CDNs deliver cached, static content from a network of servers across the globe.
+
+## JSX
