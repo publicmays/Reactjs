@@ -52,3 +52,38 @@ const element = <h1>Hello, world</h1>;
 Typically, elements are not used directly, but get returned from components.
 
 ## Components
+
+* React components are small, reusable pieces of code that return a React element to be rendered to the page. The simplest version of React component is a plain JavaScript function that returns a React element:
+
+```ts
+function Welcome(props) {
+    return <h1>Hello, {props.name}</h1>;
+}
+```
+
+* Components can also be ES6 classes:
+
+```ts
+class Welcome extends React.Component {
+    render() {
+        return <h1>Hello, {this.props.name}</h1>;
+    }
+}
+```
+
+* Components can be broken down into distinct pieces of functionality and used within other components. Components can return other components, arrays, strings and numbers. A good rule of thumb is that if a part of your UI is used several times (Button, Panel, Avatar), or is complex enough on its own (App, FeedStory, Comment), it is a good candidate to be a reusable component. Component names should also always start with a capital letter (`<Wrapper/>` not `<wrapper/>`).
+
+## props
+
+* props are inputs to a React component. They are data passed down from a parent component to a child component.
+
+Remember that props are readonly. They should not be modified in any way:
+
+```ts
+// Wrong!
+props.number = 42;
+```
+
+* If you need to modify some value in response to user input or a network response, use state instead.
+
+## props.children
