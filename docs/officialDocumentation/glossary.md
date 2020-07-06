@@ -87,3 +87,37 @@ props.number = 42;
 * If you need to modify some value in response to user input or a network response, use state instead.
 
 ## props.children
+
+* props.children is available on every component. It contains the content between the opening and closing tags of a component. For example:
+
+```ts
+<Welcome>Hello world!</Welcome>
+```
+
+* The string Hello world! is available in props.children in the Welcome component:
+
+```ts
+function Welcome(props) {
+  return <p>{props.children}</p>;
+}
+```
+
+* For components defined as classes, use this.props.children:
+
+```ts
+class Welcome extends React.Component {
+  render() {
+    return <p>{this.props.children}</p>;
+  }
+}
+```
+
+## state
+
+* A component needs state when some data associated with it changes over time. For example, a Checkbox component might need isChecked in its state, and a NewsFeed component might want to keep track of fetchedPosts in its state.
+
+* The most important difference between state and props is that props are passed from a parent component, but state is managed by the component itself. A component cannot change its props, but it can change its state.
+
+* For each particular piece of changing data, there should be just one component that “owns” it in its state. Don’t try to synchronize states of two different components. Instead, lift it up to their closest shared ancestor, and pass it down as props to both of them.
+
+## Lifecycle Methods
