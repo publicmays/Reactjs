@@ -66,3 +66,62 @@ act(() => {
 * The name act comes from the Arrange-Act-Assert pattern.
 
 ## Rendering
+
+* Commonly, you might want to test whether a component renders correctly for given props. Consider a simple component that renders a message based on a prop:
+
+```ts
+// hello.js
+
+import React from "react";
+export default function Hello(props) {
+    if (props.name) {
+        return <h1>Hello, {props.name}!</h1>
+    } else {
+        return <span>Hey, stranger</span>;
+    }
+}
+```
+
+* We can write a test for this component:
+
+```ts
+import React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
+
+import Hello from "./hello";
+
+let container = null;
+
+beforeEach(() => {
+    // setup a DOM element as a render target
+    container = document.createElement("div");
+    document.body.appendChild(container);
+});
+
+afterEach(() => {
+    // cleanup on exiting
+    unmountComponentAtNode(container);
+    container.remove();
+    container = null;
+});
+
+it("renders with or without a name", () => {
+    act(() => {
+        render(<Hello />, container);
+    });
+    expect(container.textContent).toBe("Hey, stranger");
+
+    act(() => {
+        render(<hello name="Jenny" />, container);
+    });
+    expect(container.textContent).toBe("Hello, Jenny!");
+
+    act(() => {
+        render(<Hello name="Margaret" />, container);
+    });
+    expect(container.textContent).toBe("Hello, Margaret!");
+});
+```
+
+## Data Fetching
