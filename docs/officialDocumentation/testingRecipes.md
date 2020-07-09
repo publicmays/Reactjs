@@ -125,3 +125,40 @@ it("renders with or without a name", () => {
 ```
 
 ## Data Fetching
+
+* Instead of calling real APIs in all your tests, you can mock requests with dummy data. Mocking data fetching with “fake” data prevents flaky tests due to an unavailable backend, and makes them run faster. Note: you may still want to run a subset of tests using an “end-to-end” framework that tells whether the whole app is working together.
+
+```ts
+// user.js
+
+import React, {useState, useEffect} from "react";
+
+export default function User(props) {
+    const [user, setUser] = useState(null);
+
+    async function fetchUserData(id) {
+        const response = await fetch("/" + id);
+        setUser(await response.json());
+    }
+
+    useEffect(() => {
+        fetchUserData(props.id);
+    }, [props.id]);
+
+    if (!user) {
+        return "loading...";
+    }
+
+    return (
+        <details>
+            <summary>{user.name}</summary>
+            <strong>{user.age}</strong>
+            years old
+            <br />
+            lives in {user.address}
+        </details>
+    );
+}
+```
+
+* We can write tests for it:
