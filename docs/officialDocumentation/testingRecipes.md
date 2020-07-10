@@ -215,3 +215,51 @@ jest.spyOn(global, "fetch")
 ```
 
 ## Mocking Modules
+
+* Some modules might not work well inside a testing environment, or may not be as essential to the test itself. Mocking out these modules with dummy replacements can make it easier to write tests for your own code.
+
+* Consider a Contact component that embeds a third-party GoogleMap component:
+
+```ts
+// map.js
+
+import React from "react";
+
+import { LoadScript, GoogleMap } from "react-google-maps";
+export default function Map(props) {
+    return (
+        <LoadScript id="script-loader" googleMapsApiKey="YOUR_API_KEY">
+            <GoogleMap id="example-map" center={props.center} />
+        </LoadScript>
+    );
+}
+
+// contact.js
+
+import React from "react";
+import Map from "./map";
+
+function Contact(props) {
+    return (
+        <div>
+            <address>
+                Contact {props.name} via{" "}
+                <a data-testid="email" href={"mailto:" + props.email}>
+                    email
+                </a>
+                or on their 
+                <a data-testid="site" href={props.site}>
+                    website
+                </a>.
+            </address>
+            <Map center={props.center} />
+        </div>
+    );
+}
+```
+
+* If we don’t want to load this component in our tests, we can mock out the dependency itself to a dummy component, and run our tests:
+
+```ts
+
+```
