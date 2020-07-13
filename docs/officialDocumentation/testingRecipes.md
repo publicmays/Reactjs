@@ -324,3 +324,47 @@ it("should render contact information", () => {
 ```
 
 ## Events
+
+* We recommend dispatching real DOM events on DOM elements, and then asserting on the result. Consider a Toggle component:
+
+```ts
+// toggle.js
+
+import React, { useState } from "react";
+
+export default function Toggle(props) {
+    const [state, setState] = useState(false);
+    return (
+        <button
+            onClick={() => {
+                setState(previousState => !previouState);
+                props.onChange(!state);
+            }}
+            data-testid="toggle"
+        >
+            {state === true ? "Turn off" : "Turn on" }
+        </button>
+    );
+}
+```
+
+* We could write tests for it:
+
+```ts
+// toggle.test.js
+
+import React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
+
+import Toggle from "./toggle";
+
+let container = null;
+
+beforeEach(() => {
+    // setup a DOM element as a render target
+    container = document.createElement("div");
+    // container *must* be attached to document so events work correctly
+    document.body.appendChild(container);
+})
+```
