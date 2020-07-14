@@ -420,25 +420,24 @@ it("changes value when clicked", () => {
 import React, { useEffect } from "react";
 
 export default function Card(props) {
-    useEffect(() => {
-        const timeoutID = setTimeout(() => {
-            props.onSelect(null);
-        }, 5000);
-    }
+  useEffect(() => {
+    const timeoutID = setTimeout(() => {
+      props.onSelect(null);
+    }, 5000);
     return () => {
-        clearTimeout(timeoutID);
+      clearTimeout(timeoutID);
     };
-        , [props.onSelect]);
+  }, [props.onSelect]);
 }
 
-return [1,2,3,4].map(choice => (
-    <button
-        key={choice}
-        data-testid={choice}
-        onClick={() => props.onSelect(choice)}
-    >
-        {choice}
-    </button>
+return [1, 2, 3, 4].map((choice) => (
+  <button
+    key={choice}
+    data-testid={choice}
+    onClick={() => props.onSelect(choice)}
+  >
+    {choice}
+  </button>
 ));
 ```
 
@@ -451,7 +450,76 @@ import React from "react";
 
 jest.useFakeTimers();
 let container = null;
-beforeEach(() => {});
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement("div");
+  document.body.appendChild(container);
+});
 
-afterEach(() => {});
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
+
+it("should select null after timing out", () => {
+  const onSelect = jest.fn();
+  act(() => {
+    render(<Card onSelect={onSelect} />, container);
+  });
+
+  // move ahead in time by 100ms
+  act(() => {
+    jest.advanceTimersByTime(100);
+  });
+
+  expect(onSelect).not.toHaveBeenCalled();
+
+  // and then move ahead by 5 seconds
+  act(() => {
+    jest.advanceTimersByTime(5000);
+  });
+  expect(onSelect).toHaveBeenCalledWith(null);
+});
+
+it("should cleanup on being removed", () => {
+  const onSelect = jest.fn();
+  act(() => {
+    render(<Card onSelect={onSelect} />, container);
+  });
+
+  act(() => {
+    jest.advanceTimersByTime(100);
+  });
+  expect(onSelect).not.toHaveBeenCalled();
+
+  // unmount the app
+  act(() => {
+    render(null, container);
+  });
+  act(() => {
+    jest.advanceTimersByTime(5000);
+  });
+  expect(onSelect).not.toHaveBeenCalled();
+});
+
+it("shoudl accept selections", () => {
+  const onSelect = jest.fn();
+  act(() => {
+    render(<Card onSelect={onSelect} />, container);
+  });
+
+  act(() => {
+    container
+      .querySelector("[data-testid='2']")
+      .dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  });
+
+  expect(onSelect).toHaveBeenCalledWith(2);
+});
 ```
+
+- You can use fake timers only in some tests. Above, we enabled them by calling `jest.useFakeTimers()`. The main advantage they provide is that your test doesn’t actually have to wait five seconds to execute, and you also didn’t need to make the component code more convoluted just for testing.
+
+## Snapshot Testing
