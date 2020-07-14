@@ -445,4 +445,13 @@ return [1,2,3,4].map(choice => (
 - We can write tests for this component by leveraging Jest’s timer mocks, and testing the different states it can be in.
 
 ```ts
+// card.test.js
+
+import React from "react";
+
+jest.useFakeTimers();
+let container = null;
+beforeEach(() => {});
+
+afterEach(() => {});
 ```
