@@ -523,3 +523,91 @@ it("shoudl accept selections", () => {
 - You can use fake timers only in some tests. Above, we enabled them by calling `jest.useFakeTimers()`. The main advantage they provide is that your test doesn’t actually have to wait five seconds to execute, and you also didn’t need to make the component code more convoluted just for testing.
 
 ## Snapshot Testing
+
+- Frameworks like Jest also let you save “snapshots” of data with toMatchSnapshot / toMatchInlineSnapshot. With these, we can “save” the rendered component output and ensure that a change to it has to be explicitly committed as a change to the snapshot.
+
+- In this example, we render a component and format the rendered HTML with the pretty package, before saving it as an inline snapshot:
+
+```ts
+// hello.js
+
+import React from "react";
+export default function Hello(props) {
+  if (props.name) {
+    return <h1>Hello, {props.name}!</h1>;
+  } else {
+    return <span>Hey, stranger</span>;
+  }
+}
+```
+
+```ts
+// hello.test.js, again
+
+import React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
+import pretty from "pretty";
+
+import Hello from "./hello";
+
+let container = null;
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement("div");
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
+
+it("should render a greeting", () => {
+  act(() => {
+    render(<Hello />, container);
+  });
+
+  expect(
+    pretty(container.innerHTML)
+  ).toMatchInlineSnapshot(); /* ... gets filled automatically by jest ... */
+
+  act(() => {
+    render(<Hello name="Jenny" />, container);
+  });
+
+  expect(
+    pretty(container.innerHTML)
+  ).toMatchInlineSnapshot(); /* ... gets filled automatically by jest ... */
+
+  act(() => {
+    render(<Hello name="Margaret" />, container);
+  });
+
+  expect(
+    pretty(container.innerHTML)
+  ).toMatchInlineSnapshot(); /* ... gets filled automatically by jest ... */
+});
+```
+
+- It’s typically better to make more specific assertions than to use snapshots. These kinds of tests include implementation details so they break easily, and teams can get desensitized to snapshot breakages. Selectively mocking some child components can help reduce the size of snapshots and keep them readable for the code review.
+
+## Multiple Renderers
+
+- In rare cases, you may be running a test on a component that uses multiple renderers. For example, you may be running snapshot tests on a component with `react-test-renderer`, that internally uses `ReactDOM.render` inside a child component to render some content. In this scenario, you can wrap updates with `act()`s corresponding to their renderers.
+
+```ts
+import { act as domAct } from "react-dom/test-utils";
+import { act as testAct, create } from "react-test-renderer";
+
+// ...
+let root;
+domAct(() => {
+  testAct(() => {
+    root = create(<App />);
+  });
+});
+expect(root).toMatchSnapshot();
+```
