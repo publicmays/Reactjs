@@ -103,3 +103,117 @@ Let’s recap a few key ideas in the example above:
 - “Mounting” is a recursive process that creates a DOM or Native tree given the top-level React element (e.g. `<App />`).
 
 # Mounting Host Elements
+
+This process would be useless if we didn’t render something to the screen as a result.
+
+In addition to user-defined (“composite”) components, React elements may also represent platform-specific (“host”) components. For example, Button might return a <div /> from its render method.
+
+If element’s type property is a string, we are dealing with a host element:
+
+```ts
+console.log(<div />);
+// { type: 'div', props: {} }
+```
+
+There is no user-defined code associated with host elements.
+
+When the reconciler encounters a host element, it lets the renderer take care of mounting it. For example, React DOM would create a DOM node.
+
+If the host element has children, the reconciler recursively mounts them following the same algorithm as above. It doesn’t matter whether children are host (like `<div><hr /></div>`), composite (like `<div><Button /></div>`), or both.
+
+The DOM nodes produced by the child components will be appended to the parent DOM node, and recursively, the complete DOM structure will be assembled.
+
+> Note:
+
+The reconciler itself is not tied to the DOM. The exact result of mounting (sometimes called “mount image” in the source code) depends on the renderer, and can be a DOM node (React DOM), a string (React DOM Server), or a number representing a native view (React Native).
+
+If we were to extend the code to handle host elements, it would look like this:
+
+```ts
+function isClass(type) {
+  // React.Component subclasses have this flag
+  return Boolean(type.prototype) && Boolean(type.prototype.isReactComponent);
+}
+
+// This function only handles element with a composite.type
+// For example, it handles <App /> and <Button />, but not a <div />.
+function mountComposite(element) {
+  var type = element.type;
+  var props = element.props;
+
+  var renderedElement;
+  if (isClass(type)) {
+    // Component class
+    var publicInstance = new type(props);
+    publicInstance.props = props;
+    // Call the lifecycle if necessary
+    if (publicInstance.componentWillMount) {
+      publicInstance.componentWillMount();
+    }
+    renderedElement = publicInstance.render();
+  } else if (typeof type === "function") {
+    // Component function
+    renderedElement = type(props);
+  }
+
+  // This is recursive but we'll eventually reach the bottom of recursion when
+  // the element is host (e.g. <div />) rather than composite (e.g. <App />).
+  return mount(renderedElement);
+}
+
+// This function only handles elements with a host type.
+// For example, it handles <div /> and <p /> but not an <App />.
+function mountHost(element) {
+  var type = element.type;
+  var props = element.props;
+  var children = props.children || {};
+  if (!Array.isArray(children)) {
+    children = [children];
+  }
+  children = children.filter(Boolean);
+
+  // This block of code shouldn't be in the reconciler.
+  // Different renderers might initialize nodes differently.
+  // For example, React Native would create iOS or Android views.
+  var node = document.createElement(type);
+  Object.keys(props).forEach((propName) => {
+    if (propName !== "children") {
+      node.setAttribute(propName, props[propName]);
+    }
+  });
+
+  // Mount the children
+  children.forEach((childElement) => {
+    // Children may be host (e.g. <div />) or composite (e.g. <Button />).
+    // We will also mount them recursively:
+    var childNode = mount(childElement);
+
+    // This line of code is also renderer-specific.
+    // It would be different depending on the renderer:
+    node.appendChild(childNode);
+  });
+
+  // Return the DOM node as mount result.
+  // This is where the recursion ends.
+  return node;
+}
+
+function mount(element) {
+  var type = element.type;
+  if (typeof type === "function") {
+    // User-defined components
+    return mountComposite(element);
+  } else if (typeof type === "string") {
+    // Platform-specific components
+    return mountHost(element);
+  }
+}
+
+rootEl = document.getElementById("root");
+var node = mount(<App />);
+rootEl.appendChild(node);
+```
+
+This is working but still far from how the reconciler is really implemented. The key missing ingredient is support for updates.
+
+# Introducing Internal Instances
