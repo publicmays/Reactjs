@@ -217,3 +217,94 @@ rootEl.appendChild(node);
 This is working but still far from how the reconciler is really implemented. The key missing ingredient is support for updates.
 
 # Introducing Internal Instances
+
+The key feature of React is that you can re-render everything, and it won’t recreate the DOM or reset the state:
+
+```ts
+ReactDOM.render(<App />, rootEl);
+// Should reuse the existing DOM:
+ReactDOM.render(<App />, rootEl);
+```
+
+However, our implementation above only knows how to mount the initial tree. It can’t perform updates on it because it doesn’t store all the necessary information, such as all the publicInstances, or which DOM nodes correspond to which components.
+
+The stack reconciler codebase solves this by making the mount() function a method and putting it on a class. There are drawbacks to this approach, and we are going in the opposite direction in the ongoing rewrite of the reconciler. Nevertheless this is how it works now.
+
+Instead of separate mountHost and mountComposite functions, we will create two classes: DOMComponent and CompositeComponent.
+
+Both classes have a constructor accepting the element, as well as a mount() method returning the mounted node. We will replace a top-level mount() function with a factory that instantiates the correct class:
+
+```ts
+function instantiateComponent(element) {
+  var type = element.type;
+  if (typeof type === "function") {
+    // User-defined components
+    return new CompositeComponent(element);
+  } else if (typeof type === "string") {
+    // Platform-specific components
+    return new DOMComponent(element);
+  }
+}
+```
+
+First, let's consider the implementation of `CompositeComponenet`:
+
+```ts
+class CompositeComponent {
+  constructor(element) {
+    this.currentElement = element;
+    this.renderedComponent = null;
+    this.publicInstance = null;
+  }
+
+  getPublicInstance() {
+    // For composite components, expose the class instance.
+    return this.publicInstance;
+  }
+
+  mount() {
+    var element = this.currentElement;
+    var type = element.type;
+    var props = element.props;
+
+    var publicInstance;
+    var renderedElement;
+    if (isClass(type)) {
+      // Component class
+      publicInstance = new type(props);
+      // Set the props
+      publicInstance.props = props;
+      // Call the lifecycle if necessary
+      if (publicInstance.componentWillMount) {
+        publicInstance.componentWillMount();
+      }
+    } else if (typeof type === "function") {
+      // Component function
+      publicInstance = null;
+      renderedElement = type(props);
+    }
+
+    // Save the public instance
+    this.publicInstance = publicInstance;
+
+    // Instantiate the child internal instance according to the element.
+    // It would be a DOMComponent for <div /> or <p />,
+    // and a CompositeComponent for <App /> or <Button />:
+    var renderedComponent = instantiateComponent(renderedElement);
+    this.renderedComponent = renderedComponent;
+
+    // Mount the rendered output
+    return renderedComponent.mount();
+  }
+}
+```
+
+This is not much different from our previous mountComposite() implementation, but now we can save some information, such as this.currentElement, this.renderedComponent, and this.publicInstance, for use during updates.
+
+Note that an instance of CompositeComponent is not the same thing as an instance of the user-supplied element.type. CompositeComponent is an implementation detail of our reconciler, and is never exposed to the user. The user-defined class is the one we read from element.type, and CompositeComponent creates an instance of it.
+
+To avoid the confusion, we will call instances of CompositeComponent and DOMComponent “internal instances”. They exist so we can associate some long-lived data with them. Only the renderer and the reconciler are aware that they exist.
+
+In contrast, we call an instance of the user-defined class a “public instance”. The public instance is what you see as this in the render() and other methods of your custom components.
+
+The mountHost() function, refactored to be a mount() method on DOMComponent class, also looks familiar:
