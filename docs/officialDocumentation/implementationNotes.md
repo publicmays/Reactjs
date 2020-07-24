@@ -308,3 +308,54 @@ To avoid the confusion, we will call instances of CompositeComponent and DOMComp
 In contrast, we call an instance of the user-defined class a “public instance”. The public instance is what you see as this in the render() and other methods of your custom components.
 
 The mountHost() function, refactored to be a mount() method on DOMComponent class, also looks familiar:
+
+```ts
+class DOMComponent {
+  constructor(element) {
+    this.currentElement = element;
+    this.renderedChildren = [];
+    this.node = null;
+  }
+  getPublicInstance() {
+    // For DOM components, only expose the DOM node.
+    return this.node;
+  }
+  mount() {
+    var element = this.currentElement;
+    var type = element.type;
+    var props = element.props;
+    var children = props.children || [];
+    if (!Array.isArray(children)) {
+      children = [children];
+    }
+
+    // Create and save the node
+    var node = document.createElement(type);
+    this.node = node;
+
+    // Set the attributes
+    Object.keys(props).forEach((propName) => {
+      if (propName !== "children") {
+        node.setAttribute(propName, props[propName]);
+      }
+    });
+
+    // Create and save the contained chilren.
+    // Each of them can be a DOMComponent or a CompositeComponent,
+    // depending on whether the element type is a string or a function.
+    var renderedChildren = children.map(instantiateComponent);
+    this.renderedChildren = renderedChildren;
+
+    // Collect DOM nodes they return on mount
+    var childNodes = renderedChildren.map((child) => child.mount());
+    childNodes.forEach((childNode) => node.appendChild(childNode));
+
+    // Return the DOM node as mount result
+    return node;
+  }
+}
+```
+
+The main difference after refactoring from mountHost() is that we now keep this.node and this.renderedChildren associated with the internal DOM component instance. We will also use them for applying non-destructive updates in the future.
+
+As a result, each internal instance, composite or host, now points to its child internal instances. To help visualize this, if a function <App> component renders a <Button> class component, and Button class renders a <div>, the internal instance tree would look like this:
