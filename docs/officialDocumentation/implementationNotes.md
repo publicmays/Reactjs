@@ -247,7 +247,7 @@ function instantiateComponent(element) {
 }
 ```
 
-First, let's consider the implementation of `CompositeComponenet`:
+First, let's consider the implementation of `CompositeComponent`:
 
 ```ts
 class CompositeComponent {
@@ -359,3 +359,59 @@ class DOMComponent {
 The main difference after refactoring from mountHost() is that we now keep this.node and this.renderedChildren associated with the internal DOM component instance. We will also use them for applying non-destructive updates in the future.
 
 As a result, each internal instance, composite or host, now points to its child internal instances. To help visualize this, if a function <App> component renders a <Button> class component, and Button class renders a <div>, the internal instance tree would look like this:
+
+```ts
+[object CompositeComponent] {
+  currentElement: <App />,
+  publicInstance: null,
+  renderedComponent: [object CompositeComponent] {
+    currentElement: <Button />,
+    publicInstance: [object Button],
+    renderedComponent: [object DOMComponent] {
+      currentElement: <div />,
+      node: [object HTMLDivElement],
+      renderedChildren: []
+    }
+  }
+}
+```
+
+In the DOM you would only see the <div>. However the internal instance tree contains both composite and host internal instances.
+
+The composite internal instances need to store:
+
+- The current element.
+- The public instance if element type is a class.
+- The single rendered internal instance. It can be either a DOMComponent or a CompositeComponent
+
+The host internal instances need to store:
+
+- The current element.
+- The DOM node.
+- All the child internal instances. Each of them can be either a DOMComponent or a CompositeComponent.
+
+If you’re struggling to imagine how an internal instance tree is structured in more complex applications, React DevTools can give you a close approximation, as it highlights host instances with grey, and composite instances with purple:
+
+![](https://reactjs.org/static/d96fec10d250eace9756f09543bf5d58/00d43/implementation-notes-tree.png)
+
+To complete this refactoring, we will introduce a function that mounts a complete tree into a container node, just like ReactDOM.render(). It returns a public instance, also like ReactDOM.render():
+
+```ts
+function mountTree(element, containerNode) {
+  // Create the top-level internal instance
+  var rootComponent = instantiateComponent(element);
+
+  // Mount the top level component into the container
+  var node = rootComponent.mount();
+  containerNode.appendChild(node);
+
+  // Return the public instance it provides
+  var publicInstance = rootComponent.getPublicInstance();
+  return publicInstance;
+}
+
+var rootEl = document.getElementById("root");
+mountTree(<App />, rootEl);
+```
+
+# Unmounting
