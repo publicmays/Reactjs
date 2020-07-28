@@ -495,3 +495,98 @@ function mountTree(element, containerNode) {
 Now, running unmountTree(), or running mountTree() repeatedly, removes the old tree and runs the componentWillUnmount() lifecycle method on components.
 
 # Updating
+
+In the previous section, we implemented unmounting. However React wouldn’t be very useful if each prop change unmounted and mounted the whole tree. The goal of the reconciler is to reuse existing instances where possible to preserve the DOM and the state:
+
+```ts
+var rootEl = document.getElementById("root");
+
+mountTree(<App />, rootEl);
+// Should reuse the existing DOM:
+mountTree(<App />, rootEl);
+```
+
+We will extend our internal instance contract with one more method. In addition to mount() and unmount(), both DOMComponent and CompositeComponent will implement a new method called `receive(nextElement)`:
+
+```ts
+class CompositeComponent {
+  // ...
+  receive(nextElement) {
+    // ...
+  }
+}
+
+class DOMComponent {
+  // ...
+  receive(nextElement) {
+    // ...
+  }
+}
+```
+
+Its job is to do whatever is necessary to bring the component (and any of its children) up to date with the description provided by the nextElement.
+
+This is the part that is often described as “virtual DOM diffing” although what really happens is that we walk the internal tree recursively and let each internal instance receive an update.
+
+# Updating Composite Components
+
+When a composite component receives a new element, we run the componentWillUpdate() lifecycle method.
+
+Then we re-render the component with the new props, and get the next rendered element:
+
+```ts
+class CompositeComponent {
+  // ...
+
+  receive(nextElement) {
+    var prevProps = this.currentElement.props;
+    var publicInstance = this.publicInstance;
+    var prevRenderedComponent = this.renderedComponent;
+    var prevRenderedElement = prevRenderedElement.currentElement;
+
+    // Update *own* element
+    this.currentElement = nextElement;
+    var type = nextElement.type;
+    var nextProps = nextElement.props;
+
+    // Figure out what the next render() output is
+    var nextRenderedElement;
+    if (isClass(type)) {
+      // Component class
+      // Call the lifecycle if necessary
+      if (publicInstance.componentWillUpdate) {
+        publicInstance.componentWillUpdate(nextProps);
+      }
+      // Update the props
+      publicInstance.props = nextProps;
+
+      // Re-render
+      nextRenderedElement = publicInstance.render();
+    } else if (typeof type === "function") {
+      // Component function
+      nextRenderedElement = type(nextProps);
+    }
+  }
+}
+```
+
+Next, we can look at the rendered element’s type. If the type has not changed since the last render, the component below can also be updated in place.
+
+For example, if it returned `<Button color="red" />` the first time, and `<Button color="blue" />` the second time, we can just tell the corresponding internal instance to receive() the next element:
+
+```ts
+// ...
+
+// If the rendered element type has not changed,
+// reuse the existing component instance and exit.
+if (prevRenderedElement.type === nextRenderedElement.type) {
+  prevRenderedComponent.receive(nextRenderedElement);
+  return;
+}
+
+// ...
+```
+
+However, if the next rendered element has a different type than the previously rendered element, we can’t update the internal instance. A <button> can’t “become” an <input>.
+
+Instead, we have to unmount the existing internal instance and mount the new one corresponding to the rendered element type. For example, this is what happens when a component that previously rendered a <button /> renders an <input />:
