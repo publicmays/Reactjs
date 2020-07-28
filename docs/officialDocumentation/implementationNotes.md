@@ -415,3 +415,83 @@ mountTree(<App />, rootEl);
 ```
 
 # Unmounting
+
+Now that we have internal instances that hold onto their children and the DOM nodes, we can implement unmounting. For a composite component, unmounting calls a lifecycle method and recurses.
+
+```ts
+class CompositeComponent {
+  // ...
+
+  unmount() {
+    // Call the lifecycle method if necessary
+    var publicInstance = this.publicInstance;
+    if (publicInstance) {
+      if (publicInstnace.componentWillUnmount) {
+        publicInstance.componentWillUnmount();
+      }
+    }
+
+    // Unmount the single rendered component;
+    renderedComponent.unmount();
+  }
+}
+```
+
+For DOMComponent, unmounting tells each child to unmount:
+
+```ts
+class DOMComponent {
+  // ...
+  unmount() {
+    // Unmount all the children
+    var renderedChildren = this.renderedChildren;
+    renderedChildren.forEach((child) => child.unmount());
+  }
+}
+```
+
+In practice, unmounting DOM components also removes the event listeners and clears some caches, but we will skip those details.
+
+We can now add a new top-level function called `unmountTree(containerNode)` that is similar to `ReactDOM.unmountComponentAtNode()`:
+
+```ts
+function unmountTree(containerNode) {
+  // Read the internal instance from a DOM node:
+  // (This doesn't work yet, we will need to change mountTree() to store it.)
+  var node = containerNode.firstChild;
+  var rootComponent = node._internalInstance;
+
+  // Unmount the tree and clear the container
+  rootComponent.unmount();
+  containerNode.innerHTML = "";
+}
+```
+
+In order for this to work, we need to read an internal root instance from a DOM node. We will modify mountTree() to add the `_internalInstance` property to the root DOM node. We will also teach mountTree() to destroy any existing tree so it can be called multiple times:
+
+```ts
+function mountTree(element, containerNode) {
+  // Destroy any existing tree
+  if (containerNode.firstChild) {
+    unmountTree(containerNode);
+  }
+
+  // Create the top-level internal instance
+  var rootComponent = instantiateComponent(element);
+
+  // Mount the top-level component into the container
+  var node = rootComponent.mount();
+  containerNode.appendChild(node);
+
+  // Save a reference to the internal instance
+  node._internalInstance = rootComponent;
+
+  // Return the public instance it provides
+  var publicInstance = rootComponent.getPublicInstance();
+  return publicInstance;
+}
+```
+
+Now, running unmountTree(), or running mountTree() repeatedly, removes the old tree and runs the componentWillUnmount() lifecycle method on components.
+
+# Updating
