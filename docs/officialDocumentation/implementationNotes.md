@@ -590,3 +590,53 @@ if (prevRenderedElement.type === nextRenderedElement.type) {
 However, if the next rendered element has a different type than the previously rendered element, we can’t update the internal instance. A <button> can’t “become” an <input>.
 
 Instead, we have to unmount the existing internal instance and mount the new one corresponding to the rendered element type. For example, this is what happens when a component that previously rendered a <button /> renders an <input />:
+
+```ts
+// ...
+
+// If we reached this point, we need to unmount the previously
+// mounted component, mount the new one, and swap their nodes.
+
+// Find the old node because it will need to be replaced
+var prevNode = prevRenderedComponent.getHostNode();
+
+// Unmount the old child and mount a new child
+prevRenderedComponent.unmount();
+var nextRenderedComponent = instantiateComponent(nextRenderedElement);
+var nextNode = nextRenderedComponent.mount();
+
+// Replace the reference to the child
+this.renderedComponent = nextRenderedComponent;
+
+// Replace the old node with the new one
+// Note: this is renderer-specific code and
+// ideally should live outside of CompositeComponent:
+prevNode.parentNode.replaceChild(nextNode, prevNode);
+```
+
+To sum this up, when a composite component receives a new element, it may either delegate the update to its rendered internal instance, or unmount it and mount a new one in its place.
+
+There is another condition under which a component will re-mount rather than receive an element, and that is when the element’s key has changed. We don’t discuss key handling in this document because it adds more complexity to an already complex tutorial.
+
+Note that we needed to add a method called getHostNode() to the internal instance contract so that it’s possible to locate the platform-specific node and replace it during the update. Its implementation is straightforward for both classes:
+
+```ts
+class CompositeComponent {
+  // ...
+
+  getHostNode() {
+    // Ask the rendered component to provide it.
+    // This will recursively drill down any composites.
+    return this.renderedComponent.getHostNode();
+  }
+}
+
+class DOMComponent {
+  // ...
+  getHostNode() {
+    return this.node;
+  }
+}
+```
+
+# Updating Host Components
