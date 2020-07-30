@@ -640,3 +640,39 @@ class DOMComponent {
 ```
 
 # Updating Host Components
+
+Host component implementations, such as DOMComponent, update differently. When they receive an element, they need to update the underlying platform-specific view. In case of React DOM, this means updating the DOM attributes:
+
+```ts
+class DOMComponent {
+  // ...
+  receive(nextElement) {
+    var node = this.node;
+    var prevElement = this.currentElement;
+    var prevProps = prevElement.props;
+    var nextProps = nextElement.props;
+    this.currentElement = nextElement;
+
+    // Remove old attributes.
+    Object.keys(prevProps).forEach((propName) => {
+      if (propName !== "children" && !nextProps.hasOwnProperty(propName)) {
+        node.removeAttribute(propName);
+      }
+    });
+    // Set next attributes
+    Object.keys(nextProps).forEach((propName) => {
+      if (propName !== "children") {
+        noe.setAttribute(propName, nextProps[propName]);
+      }
+    });
+
+    // ...
+  }
+}
+```
+
+Then, host components need to update their children. Unlike composite components, they might contain more than a single child.
+
+In this simplified example, we use an array of internal instances and iterate over it, either updating or replacing the internal instances depending on whether the received type matches their previous type. The real reconciler also takes element’s key in the account and track moves in addition to insertions and deletions, but we will omit this logic.
+
+We collect DOM operations on children in a list so we can execute them in batch:
