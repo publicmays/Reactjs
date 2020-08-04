@@ -676,3 +676,81 @@ Then, host components need to update their children. Unlike composite components
 In this simplified example, we use an array of internal instances and iterate over it, either updating or replacing the internal instances depending on whether the received type matches their previous type. The real reconciler also takes element’s key in the account and track moves in addition to insertions and deletions, but we will omit this logic.
 
 We collect DOM operations on children in a list so we can execute them in batch:
+
+```ts
+// These are arrays of React elements:
+var prevChildren = prevProps.children || [];
+if (!Array.isArray(prevChildren)) {
+  prevChilren = [prevChildren];
+}
+var nextChildren = nextProps.children || [];
+if (!Array.isArray(nextChildren)) {
+  nextChildren = [nextChildren];
+}
+// These are arrays of internal instances:
+var prevRenderedChildren = this.renderedChildren;
+var nextRenderedChildren = [];
+
+// As we iterate over children, we will add operations to the array.
+var operationQueue = [];
+
+// Note: the section below is extremely simplified
+// It doesn't handle reorders, children with holes, or keys.
+// It only exists to illustrate the overall flow, not the specifics.
+
+for (var i = 0; i < nextChildren.length; ++i) {
+  // Try to get an existing internal instance for this child
+  var prevChild = prevRenderedChildren[i];
+
+  // If there is no internal instance under this index,
+  // a child has been appended to the end. Create a new
+  // internal instance, mount it, and use its node.
+  if (!prevChild) {
+    var nextChild = instantiateComponent(nextChildren[i]);
+    var node = nextChild.mount();
+
+    // Record that we need to append a node
+    operationQueue.push({ type: "ADD", node });
+    nextRenderedChildren.push(nextChild);
+    continue;
+  }
+
+  // We can only update hte instance if its element's type matches.
+  // For example, <Button size="small" /> can be updated to
+  // <Button size="large" /> but not to an <App />.
+  var canUpdate = prevChildren[i].type === nextChildren[i].type;
+
+  // If we can't update an existing instance, we have to unmount it
+  // and mount a new one instead of it.
+  if (!canUpdate) {
+    var prevNode = prevChild.getHostNode();
+    prevChild.unmount();
+
+    var nextChild = instantiateComponent(nextChildren[i]);
+    var nextNode = nextChild.mount();
+
+    // Record that we need to swap the nodes
+    operationQueue.push({ type: "REPLACE", prevNode, nextNode });
+    nextRenderedChildren.push(nextChild);
+    continue;
+  }
+
+  // If we can update an existing internal instance,
+  // just let it receive the next element and handle its own update.
+  prevChild.receive(nextChildren[i]);
+  nextRenderedChildren.push(prevChild);
+}
+
+// Finally unmount any children that don't exist:
+for (var j = nextChildren.length; j < prevChildren.length; ++j) {
+  var prevChild = prevRenderedChildren[j];
+  var node = prevChild.getHostNode();
+  prevChild.unmount();
+
+  // Record that we need to remove the node
+  operationQueue.push({ type: "REMOVE", node });
+}
+
+// Point the list of rendered children to the updated version.
+this.renderedChildren = nextRenderedChildren;
+```
