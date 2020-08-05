@@ -754,3 +754,62 @@ for (var j = nextChildren.length; j < prevChildren.length; ++j) {
 // Point the list of rendered children to the updated version.
 this.renderedChildren = nextRenderedChildren;
 ```
+
+As the last step, we execute the DOM operations. Again, the real reconciler code is more complex because it also handles moves:
+
+```ts
+// Process the operation queue.
+while (operationQueue.length > 0) {
+  var operation = operationQueue.shift();
+  switch (operation.type) {
+    case "ADD":
+      this.node.appendChild(operation.node);
+      break;
+    case "REPLACE":
+      this.node.replaceChild(operation.nextNode, operation.prevNode);
+      break;
+    case "REMOVE":
+      this.node.removeChild(operation.node);
+      break;
+  }
+}
+```
+
+And that is it for updating host components.
+
+# Top-Level Updates
+
+Now that both CompositeComponent and DOMComponent implement the `receive(nextElement)` method, we can change the top-level `mountTree()` function to use it when the element type is the same as it was the last time:
+
+```ts
+function mountTree(element, containerNode) {
+  // Check for an existing tree
+  if (containerNode.firstChild) {
+    var prevNode = containerNode.firstChild;
+    var prevRootComponent = prevNode._internalInstance;
+    var prevElement = prevRootComponent.currentElement;
+
+    // If we can, reuse the existing root component
+    if (prevElement.type === element.type) {
+      prevRootComponent.receive(element);
+      return;
+    }
+
+    // Otherwise, unmount the existing tree
+    unmountTree(containerNode);
+  }
+}
+```
+
+Now calling `mountTree()` two times with the same type isn't destructive:
+
+```ts
+var rootEl = document.getElementById("root");
+mountTree(<App />, rootEl);
+// Reuses the existing DOM:
+mountTree(<App />, rootEl);
+```
+
+These are the basics of how React works internally.
+
+# What We Left Out
