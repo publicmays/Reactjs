@@ -813,3 +813,17 @@ mountTree(<App />, rootEl);
 These are the basics of how React works internally.
 
 # What We Left Out
+
+This document is simplified compared to the real codebase. There are a few important aspects we didn’t address:
+
+- Components can render null, and the reconciler can handle “empty slots” in arrays and rendered output.
+- The reconciler also reads key from the elements, and uses it to establish which internal instance corresponds to which element in an array. A bulk of complexity in the actual React implementation is related to that.
+- In addition to composite and host internal instance classes, there are also classes for “text” and “empty” components. They represent text nodes and the “empty slots” you get by rendering null.
+- Renderers use injection to pass the host internal class to the reconciler. For example, React DOM tells the reconciler to use ReactDOMComponent as the host internal instance implementation.
+- The logic for updating the list of children is extracted into a mixin called ReactMultiChild which is used by the host internal instance class implementations both in React DOM and React Native.
+- The reconciler also implements support for setState() in composite components. Multiple updates inside event handlers get batched into a single update.
+- The reconciler also takes care of attaching and detaching refs to composite components and host nodes.
+- Lifecycle methods that are called after the DOM is ready, such as componentDidMount() and componentDidUpdate(), get collected into “callback queues” and are executed in a single batch.
+- React puts information about the current update into an internal object called “transaction”. Transactions are useful for keeping track of the queue of pending lifecycle methods, the current DOM nesting for the warnings, and anything else that is “global” to a specific update. Transactions also ensure React “cleans everything up” after updates. For example, the transaction class provided by React DOM restores the input selection after any update.
+
+# Jumping into the Code
