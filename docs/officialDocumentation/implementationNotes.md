@@ -827,3 +827,13 @@ This document is simplified compared to the real codebase. There are a few impor
 - React puts information about the current update into an internal object called “transaction”. Transactions are useful for keeping track of the queue of pending lifecycle methods, the current DOM nesting for the warnings, and anything else that is “global” to a specific update. Transactions also ensure React “cleans everything up” after updates. For example, the transaction class provided by React DOM restores the input selection after any update.
 
 # Jumping into the Code
+
+- ReactMount is where the code like mountTree() and unmountTree() from this tutorial lives. It takes care of mounting and unmounting top-level components. ReactNativeMount is its React Native analog.
+- ReactDOMComponent is the equivalent of DOMComponent in this tutorial. It implements the host component class for React DOM renderer. ReactNativeBaseComponent is its React Native analog.
+- ReactCompositeComponent is the equivalent of CompositeComponent in this tutorial. It handles calling user-defined components and maintaining their state.
+  instantiateReactComponent contains the switch that picks the right internal instance class to construct for an element. It is equivalent to instantiateComponent() in this tutorial.
+- ReactReconciler is a wrapper with mountComponent(), receiveComponent(), and unmountComponent() methods. It calls the underlying implementations on the internal instances, but also includes some code around them that is shared by all internal instance implementations.
+- ReactChildReconciler implements the logic for mounting, updating, and unmounting children according to the key of their elements.
+- ReactMultiChild implements processing the operation queue for child insertions, deletions, and moves independently of the renderer.
+  mount(), receive(), and unmount() are really called mountComponent(), receiveComponent(), and unmountComponent() in React codebase for legacy reasons, but they receive elements.
+- Properties on the internal instances start with an underscore, e.g. \_currentElement. They are considered to be read-only public fields throughout the codebase.
