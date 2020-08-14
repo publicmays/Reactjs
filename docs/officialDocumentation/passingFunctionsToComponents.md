@@ -78,3 +78,46 @@ class Foo extends Component {
 Using an arrow function in render creates a new function each time the component renders, which may break optimizations based on strict identity comparison.
 
 ## Is it OK to use arrow functions in render methods?
+
+Generally speaking, yes, it is OK, and it is often the easiest way to pass parameters to callback functions.
+
+If you do have performance issues, by all means, optimize!
+
+## Why is binding necessary at all?
+
+In JavaScript, these two code snippets are not equivalent:
+
+```ts
+obj.method();
+```
+
+```ts
+var method = obj.method;
+method();
+```
+
+Binding methods helps ensure that the second snippet works the same way as the first one.
+
+With React, typically you only need to bind the methods you pass to other components. For example, `<button onClick={this.handleClick}>` passes this.handleClick so you want to bind it. However, it is unnecessary to bind the render method or the lifecycle methods: we don’t pass them to other components.
+
+## Why is my function being called every time the component renders?
+
+Make sure you aren’t calling the function when you pass it to the component:
+
+```ts
+render() {
+  // Wrong: handleClick is called instead of passed as a reference!
+  return <button onClick={this.handleClick()}>Click Me</button>
+}
+```
+
+Instead _pass the function itself_ (without parens):
+
+```ts
+render() {
+  // Correct: handleClick is passed as a reference!
+  return <button onClick={this.handleClick}> Click Me </button>
+}
+```
+
+## How do I pass a parameter to an event handler or callback?
