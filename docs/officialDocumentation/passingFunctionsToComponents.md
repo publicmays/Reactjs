@@ -121,3 +121,48 @@ render() {
 ```
 
 ## How do I pass a parameter to an event handler or callback?
+
+You can use an arrow function to wrap around an event handler and pass parameters:
+
+```ts
+<button onClick={() => this.handleClick(id)} />
+```
+
+This is equivalent to calling `.bind`
+
+```ts
+<button onClick={this.handleClick.bind(this, id)} />
+```
+
+### Example: Passing params using arrow functions
+
+```ts
+const A = 65; // ASCII character code
+class Alphabet extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.state = {
+      justClicked: null,
+      letters: Array.from({ length: 26 }, (_, i) => String.fromCharCode(A + i)),
+    };
+  }
+  handleClick(letter) {
+    this.setState({ justClicked: letter });
+  }
+  render() {
+    return (
+      <div>
+        Just clicked: {this.state.justClicked}
+        <ul>
+          {this.state.letters.map((letter) => (
+            <li key={letter} onClick={() => this.handleClick(letter)}>
+              {letter}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+```
