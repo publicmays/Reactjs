@@ -166,3 +166,59 @@ class Alphabet extends React.Component {
   }
 }
 ```
+
+### Example: Passing params using data-attributes
+
+Alternately, you can use DOM APIs to store data needed for event handlers. Consider this approach if you need to optimize a large number of elements or have a render tree that relies on React.PureComponent equality checks.
+
+```ts
+const A = 65; // ASCII character code
+
+class Alphabet extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.state = {
+      justClicked: null,
+      letters: Array.from({ length: 26 }, (_, i) => String.fromCharCode(A + i)),
+    };
+  }
+
+  handleClick(e) {
+    this.setState({
+      justClicked: e.target.dataset.letter,
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        Just clicked: {this.state.justClicked}
+        <ul>
+          {this.state.letters.map((letter) => (
+            <li key={letter} data-letter={letter} onClick={this.handleClick}>
+              {letter}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+```
+
+### How can I prevent a function from being called too quickly or too many times in a row?
+
+If you have an event handler such as onClick or onScroll and want to prevent the callback from being fired too quickly, then you can limit the rate at which callback is executed. This can be done by using:
+
+- throttling: sample changes based on a time based frequency (eg \_.throttle)
+- debouncing: publish changes after a period of inactivity (eg \_.debounce)
+- requestAnimationFrame throttling: sample changes based on requestAnimationFrame (eg raf-schd)
+
+See this [visualization](http://demo.nimius.net/debounce_throttle/) for a comparison of throttle and debounce functions.
+
+> Note:
+
+- `_.debounce, _.throttle and raf-schd` provide a cancel method to cancel delayed callbacks. You should either call this method from componentWillUnmount or check to ensure that the component is still mounted within the delayed function.
+
+### Throttle
