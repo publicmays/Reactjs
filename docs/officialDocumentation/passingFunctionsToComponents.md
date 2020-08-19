@@ -222,3 +222,28 @@ See this [visualization](http://demo.nimius.net/debounce_throttle/) for a compar
 - `_.debounce, _.throttle and raf-schd` provide a cancel method to cancel delayed callbacks. You should either call this method from componentWillUnmount or check to ensure that the component is still mounted within the delayed function.
 
 ### Throttle
+
+Throttling prevents a function from being called more than once in a given window of time. The example below throttles a “click” handler to prevent calling it more than once per second.
+
+```ts
+import throttle from "lodash.throttle";
+
+class LoadMoreButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleClickThrottled = throttle(this.handleClick, 1000);
+  }
+  componentWillUnmount() {
+    this.handleClickThrottled.cancel();
+  }
+  render() {
+    return <button onClick={this.handleClickThrottled}>Load More</button>;
+  }
+  handleClick() {
+    this.props.loadMore();
+  }
+}
+```
+
+### Debounce
