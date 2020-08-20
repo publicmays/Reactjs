@@ -247,3 +247,45 @@ class LoadMoreButton extends React.Component {
 ```
 
 ### Debounce
+
+Debouncing ensures that a function will not be executed until after a certain amount of time has passed since it was last called. This can be useful when you have to perform some expensive calculation in response to an event that might dispatch rapidly (eg scroll or keyboard events). The example below debounces text input with a 250ms delay.
+
+```ts
+import debounce from "lodash.debounce";
+
+class Searchbox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.emitChangeDebounced = debounce(this.emitChange, 250);
+  }
+
+  componentWillUnmount() {
+    this.emitChangeDebounced.cancel();
+  }
+
+  render() {
+    return (
+      <input
+        type="text"
+        onChange={this.handleChange}
+        placeholder="Search..."
+        defaultValue={this.props.value}
+      />
+    );
+  }
+
+  handleChange(e) {
+    // React pools events, so we read the value before debounce.
+    // Alternately we would call `event.persist()` and pass the entire event.
+    // For more info see reactjs.org/docs/events.html#event-pooling
+    this.emitChangeDebounced(e.target.value);
+  }
+
+  emitChange(value) {
+    this.props.onChange(value);
+  }
+}
+```
+
+### requestAnimationFrame throttling
