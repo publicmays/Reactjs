@@ -41,8 +41,8 @@ handleSomething() {
     // When React re-renderes the component, `this.state.count` will be 1, but you expected 3.
 
     // This is because `incrementCount()` function above reads from `this.state.count`,
-   // but React doesn't update `this.state.count` until the component is re-rendered.
-   // So `incrementCount()` ends up reading `this.state.count` as 0 every time, and sets it to 1.
+    // but React doesn't update `this.state.count` until the component is re-rendered.
+    // So `incrementCount()` ends up reading `this.state.count` as 0 every time, and sets it to 1.
 
     // The fix is described below!
 }
