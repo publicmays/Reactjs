@@ -16,4 +16,18 @@ If there is no any additional work on the child components done the Class and Fu
 
 As Pure component implements shallow comparison of the props out of the box, it won't re-render.
 
-https://smykhailov.github.io/react-patterns/#/
+## Regular components props change
+
+If any prop has been changed on any of the component type: Class, Pure, Function all of them will re-render and this is expected behavior.
+
+## Memoized components no props change
+
+Components should be "memoized" to prevent re-rendering when no props have been changed.
+
+The "memoziation" techniques described in the corresponding section of each component type.
+
+The only Pure component has this functionality out of the box and no additional work for such component required.
+
+## Memoized components props change
+
+If any prop has been changed on any of the component type: Class, Pure, Function all of them will re-render even if they are "memoized" and this is expected behavior.
