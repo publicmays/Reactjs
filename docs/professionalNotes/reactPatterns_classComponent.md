@@ -43,4 +43,62 @@ export class ChildClassComponentMemoized extends Component<TValue> {
 
 ## Solution 2: Use Pure Component
 
+Consider using Pure Component.
+
+```ts
+export class ChildPureComponent extends PureComponent<TValue> {
+  // `Pure` component implements `shouldComponentUpdate()` with a shallow prop and state comparison.
+  // That means no additional changes needed for the plain props.
+  // ✅ Component does not re-render if parent component re-renders
+  // but the props have not been changed.
+  render() {
+    return (
+      <RenderCounter color="green">
+        Child Pure Component: {this.props.value}
+      </RenderCounter>
+    );
+  }
+}
+```
+
+## Regular Component - Object props
+
+Passing objects as properties to the component are dangerous in terms of causing not wanted re-rendering. If component needs to work only with subset of the object properties and none of them being changed, the component still might re-render if any of the other property has changed.
+
+Also, even if developer created the object and passes it as a parameter to the component, it doesn't prevent other developers to add their own properties to the same object without even knowing that it might have negative impact on re-rendering some other not related component.
+
+```ts
+export type TObjectProps = {
+  obj: TObjectValue;
+};
+
+export type TObjectValue = {
+  num: number;
+  str: string;
+};
+```
+
+The component takes object properties as defined above:
+
+```ts
+export class ChildClassComponentWithObjectProps extends Component<
+  TObjectProps
+> {
+  render() {
+    // The component only works with ✅ obj.str property and ignores ✅ obj.num
+    // If parent component doesn't change the ✅ obj.str, but changes ⛔ obj.num
+    // this component will still re-render 💣
+    return (
+      <RenderCounter color="red">
+        Child Class Component: {this.props.obj.str}
+      </RenderCounter>
+    );
+  }
+}
+```
+
+When parent component changes obj.num and doesn't change obj.str, the component still re-renders. This will only be true if the actual instance changed, because PureComponent checks the instance itself.
+
+## Solution 1: Use plain props
+
 https://smykhailov.github.io/react-patterns/#/class-component
