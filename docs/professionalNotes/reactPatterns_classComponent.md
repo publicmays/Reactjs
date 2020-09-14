@@ -101,4 +101,47 @@ When parent component changes obj.num and doesn't change obj.str, the component 
 
 ## Solution 1: Use plain props
 
-https://smykhailov.github.io/react-patterns/#/class-component
+The best solution is to use plain props and pass primitive values to the component.
+
+```ts
+export class ChildClassComponentWithObjectProps extends Component<{str: string;}> {
+  // ❗ even is you use plain props, make sule you also override shouldComponentUpdate()
+  // othervise force update will trigger re-rendering.
+  shouldComponentUpdate (nextProps: Readonly{str: string}) {
+    return nextProps.str !== this.props.str;
+  }
+  render() {
+    // ✅ No object which can impact re-rendering
+    return (
+      <RenderCounter color="red">
+        Child Class Component: {this.props.str}
+      </RenderCounter>
+    );
+  }
+}
+```
+
+## Solution 2: Override shouldComponentUpdate() lifecycle method
+
+When parent component changes obj.num and doesn't change obj.str, the component does not re-render.
+
+```ts
+export class ChildClassComponentWithObjectPropsMemoized extends Component<
+  TObjectProps
+>
+{
+  shouldComponentUpdate() {
+    // ✅ Make sure you cover scenario, when other developer
+    // could potentially add other fields to the props object
+    return nextProps.obj.str !== this.props.obj.str;
+  }
+
+  render() {
+    return (
+      <RenderCounter color="red">
+        Child Class Component <string>Memoized</strong>: {this.props.object.str}
+      </RenderCounter>
+    );
+  }
+}
+```
