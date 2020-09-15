@@ -1,3 +1,84 @@
 # Pure Component
 
-https://smykhailov.github.io/react-patterns/#/pure-component
+Pure Component - the React.PureComponent is similar to the React.Component. The difference between them is that React.Component doesn’t implement shouldComponentUpdate(), but React.PureComponent implements it with a shallow prop and state comparison.
+
+If your React component’s render() function renders the same result given the same props and state, you can use React.PureComponent for a performance boost in some cases.
+
+## Pure Component - Plain props
+
+Pure component implements shouldComponentUpdate() with a shallow prop and state comparison. That means no additional changes needed for the plain props.
+
+```ts
+export class ChildPureComponent extends PureComponent<TValue> {
+  // `Pure` component implements `shouldComponentUpdate()` with a **shallow prop and state comparison**.
+  // That means no additional changes needed for the plain props.
+  // ✅ Component does not re-render if parent component re-renders
+  // but the props have not been changed.
+  render() {
+    return (
+      <RenderCounter color="green">
+        Child Pure Component: {this.props.value}
+      </RenderCounter>
+    );
+  }
+}
+```
+
+## Pure Component - Object props
+
+Passing objects as properties to the component are dangerous in terms of causing not wanted re-rendering. If component needs to work only with subset of the object properties and none of them being changed, the component still might re-render if any of the other property has changed.
+
+Also, even if developer created the object and passes it as a parameter to the component, it doesn't prevent other developers to add their own properties to the same object without even knowing that it might have negative impact on re-rendering some other not related component.
+
+```ts
+export type TObjectProps = {
+  obj: TObjectValue;
+};
+
+export type TObjectValue = {
+  num: number;
+  str: string;
+};
+```
+
+The component takes object properties as defined above:
+
+```ts
+export class ChildPureComponentWithObjectProps extends PureComponent<
+  TObjectProps
+> {
+  render() {
+    // The component only works with ✅ obj.str property and ignores ✅ obj.num
+    // If parent component doesn't change the ✅ obj.str, but changes ⛔ obj.num
+    // this component will still re-render 💣
+    return (
+      <RenderCounter color="red">
+        Child Pure Component: {this.props.obj.str}
+      </RenderCounter>
+    );
+  }
+}
+```
+
+When parent component changes obj.num and doesn't change obj.str, the component still re-renders. This happens, because PureComponent does a shallow comparison.
+
+Note: the drawback of PureComponent with object props is, that if you change a value inside the object and not change the instance, the component may not re-render because it fails the shallow checks.
+
+## Solution: Use plain props
+
+The best solution is to use plain props and pass primitive values to the component.
+
+```ts
+export class ChildPureComponentWithObjectProps extends PureComponent<{
+  str: string;
+}> {
+  render() {
+    // ✅ No object which can impact re-rendering
+    return (
+      <RenderCounter color="red">
+        Child PUre Component: {this.props.str}
+      </RenderCounter>
+    );
+  }
+}
+```
