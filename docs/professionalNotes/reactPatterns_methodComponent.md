@@ -1,3 +1,105 @@
 # Method Component
 
-https://smykhailov.github.io/react-patterns/#/method-component
+Note, the Method Component term is not an industry defined term. That's how we call it describe the component which get returned from the method of class.
+
+Method Component is a component which was implemented as a method of Class Component. Implementing components this way will cause several issues:
+
+- Hard to maintain, components become tightly coupled
+- Hard to control re-rendering conditions
+- Hard to reuse such components
+- Idiomatically React is functional and the approach is rather OOP
+- Potentially may cause hooks related bugs (https://kentcdodds.com/blog/dont-call-a-react-function-component)
+
+React Tutorials illustrate this approach in the examples with the renderSquare() method. We recommended to use it only if there is strong use case for such a usage. Otherwise try to avoid this approach, because of the reasons described in this article. React Tutorials mentions that it should be factored out in the Wrapping Up section.
+
+```ts
+interface IClassComponentWithMethodComponentsProps {
+  str: string;
+  num: number;
+}
+
+export class ClassComponentWithMethodComponents extends React.PureComponent<
+  IClassComponentWithMethodComponentsProps
+> {
+  private strMethodComponent() {
+    const { str } = this.props;
+    return (
+      <RenderCounter color="blue">
+        <p>
+          <i>str</i> is {str}
+        </p>
+      </RenderCounter>
+    );
+  }
+  private numMethodComponent() {
+    const { num } = this.props;
+    return (
+      <RenderCounter color="red">
+        <p>
+          <i>num</i> is {num}
+        </p>
+      </RenderCounter>
+    );
+  }
+  render() {
+    return (
+      <RenderCounter color="yellow">
+        <div>
+          {this.strMethodComponent()}
+          {this.numMethodComponent()}
+        </div>
+      </RenderCounter>
+    );
+  }
+}
+```
+
+Note: Method Components are not specific to classes only, this pattern has been seen also in Function Components as well.
+
+## Solution: Separated Components
+
+Every component has its scope and depends only on required props. It allows us to easily refactor/remove a component and specify re-render conditions for each component separately using React.PureComponent, shouldComponentUpdate() or React.memo()
+
+```ts
+interface IStrComponentProps {
+  str: string;
+}
+const StrComponent = React.memo(({ str }: IStrComponentProps) => (
+  <RenderCounter color="blue">
+    <p>
+      <i>str</i> is {str}
+    </p>
+  </RenderCounter>
+));
+
+interface INumComponentProps {
+  num: number;
+}
+class NumComponent extends React.PureComponent<INumComponentProps> {
+  render() {
+    return (
+      <RenderCounter color="red">
+        <p>
+          <i>num</i> is {this.props.num}
+        </p>
+      </RenderCounter>
+    );
+  }
+}
+interface IClassComponentProps {
+  str: string;
+  num: number;
+}
+export class ClassComponent extends React.PureComponent<IClassComponentProps> {
+  render() {
+    return (
+      <RenderCounter color="yellow">
+        <div>
+          <StrComponent str={this.props.str} />
+          <NumComponent num={this.props.num} />
+        </div>
+      </RenderCounter>
+    );
+  }
+}
+```
