@@ -65,5 +65,3 @@ const UseEffectAsyncWithCleanup: FC<TData> = (props: TData) => {
 otherwise you might gat stale data, when the promise resolves later than expected.
 
 more detailed information in the following [article](https://dev.to/n1ru4l/homebrew-react-hooks-useasynceffect-or-how-to-handle-async-operations-with-useeffect-1fa8).
-
-https://smykhailov.github.io/react-patterns/#/hook-use-effect
