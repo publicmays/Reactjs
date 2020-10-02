@@ -58,4 +58,68 @@ Now your constructor of the body component i.e. Body is going to be a different 
 
 ## Ok so may be we'll stick to the Calling syntax?
 
+Let's roll back to the old way of coding Animal which is:
+
+```ts
+const Animal = ({ name, body }) => {
+  return <Box>{body({ name })}</Box>;
+};
+```
+
+Now even if the consumer specifies the function inline it won't matter as we aren't rendering the component but rather _rendering the return value of the component_, which happens to be a ReactNode.
+
+Now consider the type of the body prop. You can say that it looks like this:
+
+```ts
+body: ({ name }: { name: string }) => JSX.Element;
+```
+
+which in other works is equivalent of reading it as:
+
+```ts
+body: React.FunctionComponent<{name: string}>
+```
+
+So what if a new consumer decides to do the following:
+
+```ts
+const Quadruped = ({ name }) => {
+  useEffect(() => {
+    console.log("Mounting a Quadruped");
+  }, []);
+  return <Legs keys={name} count={4} />;
+};
+
+const Elephant = () => <Animal name="elephant" body="{Quadruped}" />;
+```
+
+How many times do you think it will log the above console.log for a single Elephant used only once? If the answer is more than one, you are correct. Though the developer was definitely not expecting that.
+
+This is case when you use hooks in that above example, remember that the developer of Animal wasn't thinking of it as a React component and was consider it a function. Which means he/she never rendered it, which means that the hook useEffect was being called inline. That is similar to having done something like:
+
+```ts
+const Elephant = () => <Animal name="elephant" body={{
+  ({name}) => {
+    // ESLINT-ERROR: RULES OF HOOKS
+    useEffect(() => {
+      console.log("mounting a Quadruped");
+    }, []);
+
+    return <Legs key={name} count={4} />;
+  }
+}} />
+```
+
+As you see above when you try to code this. You get an eslint warning. The main reason this is bad is that, hooks or rather the state for hooks and their order don't live in the React tree. They live in a global corresponding to each node of a the React tree. The way the state associated with a hook is identified is by using the component's constructor reference. Same reason as before, that we can't render these components, we can't have hooks in them. So what's the solution to the above problem:
+
+```ts
+const Elephant = () => (
+  <Animal name="elephant" body={({ name }) => <Quadruped name={name} />} />
+);
+```
+
+wordy... but it merges the worlds of RenderProps and Hooks.
+
+## Using TypeScript to catch these upfront
+
 https://smykhailov.github.io/react-patterns/#/hooks-render-props
