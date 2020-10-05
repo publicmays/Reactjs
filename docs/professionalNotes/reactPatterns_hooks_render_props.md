@@ -122,4 +122,18 @@ wordy... but it merges the worlds of RenderProps and Hooks.
 
 ## Using TypeScript to catch these upfront
 
-https://smykhailov.github.io/react-patterns/#/hooks-render-props
+Developers of the component that accept render props, in this case the person who wrote Animal, should type their components as follows:
+
+```ts
+body: ({ name: string }) => React.ReactNode; // not JSX.Element
+```
+
+This specifically tells TypeScript that you can't render this component as <body /> and neither can you supply a React.ComponentClass or React.FunctionComponent to the body argument.
+
+If you want to support rendering and are going to invoke it as such, then please type it as:
+
+```ts
+body: React.ComponentType<{name:string}>
+```
+
+As always, if you can avoid being in this state by either using only hooks or renderProps, that's even better.
