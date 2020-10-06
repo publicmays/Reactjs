@@ -18,4 +18,35 @@ const Example = React.memo((props) => {
 
 > Examples and info is taken from the official ReactJS documentation.
 
+Context uses reference identity to determine when to re-render, there are some gotchas that could trigger unintentional renders in consumers when a provider’s parent re-renders. For example, the code below will re-render all consumers every time the Provider re-renders because a new object is always created for value:
+
+```ts
+class Example extends React.Component {
+  state = { value: 1 };
+  render() {
+    const { children } = this.props;
+
+    // ⛔ ({ value: 1 } === { value: 1 }) is false, so reference is different
+    return <Provider value={{ value: this.state.value }}>{children}</Provider>;
+  }
+}
+```
+
+To get around this, lift the value into the parent’s state:
+
+```ts
+class Example extends React.Component {
+  state = { value: 1 };
+  render() {
+    const { children } = this.props;
+
+    return <Provider value={this.state.value}>{children}</Provider>;
+  }
+}
+```
+
+> Note: if context value is constant, then having a static value is fine, no even need to use useMemo().
+
+## Solution 1: Use memoized context value
+
 https://smykhailov.github.io/react-patterns/#/context
