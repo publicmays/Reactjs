@@ -49,4 +49,38 @@ class Example extends React.Component {
 
 ## Solution 1: Use memoized context value
 
+If value is changing rarely is good option to memoize an object value with useMemo() hook.
+
+```ts
+const Example = (props) => {
+  const { children, value } = props;
+  // ✅ Now new `context` will be recreated only on `value` change
+  const context = React.useMemo(() => ({ value }), [value]);
+
+  return <Provider value={context}>{children}</Provider>;
+};
+```
+
+## Solution 2: Use separate contexts
+
+This trick was [described](https://kentcdodds.com/blog/how-to-use-react-context-effectively) by Kent Dodds. The idea is to pass plain/memoized values in separate contexts to avoid useless notifications to subscribers.
+
+```ts
+const Example = (props) => {
+  const { children } = props;
+
+  // ❗ both values are plain and safe for shallow compare
+  const firstValue = 1;
+  const secondValue = 2;
+
+  return (
+    <FirstProvider value={firstValue}>
+      <SecondProvider value={secondValue}>{children}</SecondProvider>
+    </FirstProvider>
+  );
+};
+```
+
+## Solution 3: Use context selectors
+
 https://smykhailov.github.io/react-patterns/#/context
