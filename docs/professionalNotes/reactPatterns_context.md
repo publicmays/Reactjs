@@ -83,4 +83,74 @@ const Example = (props) => {
 
 ## Solution 3: Use context selectors
 
-https://smykhailov.github.io/react-patterns/#/context
+@fluentui/react-context-selector implements context selectors RFC. This package provides useContextSelector() hook allows to subscribe only to required updates.
+
+```ts
+const App = props => {
+  const {children} = props;
+  const {foo: 1, bar: 2} = value;
+  return (
+    <Context.Provider value={value}>{children}</Context.Provider>
+  );
+}
+
+const Consumer = props => {
+  // ✅ Only updates that satisfy the selector will trigger the component's rerender
+  const foo = useContextSelector(Context, v => v.foo);
+
+  // do other things...
+}
+```
+
+## Solution 4: Experimental bits API
+
+React provides an experimental API with calculateChangedBits & calculateChangedBits:
+
+```ts
+function createContext<T>(
+  defaultValue: T,
+  calculateChangedBits?: (prev: T, next: T) => number
+): Context<T>;
+
+function useContext<T>(context: Context<T>, observedBits?: number | boolean): T;
+```
+
+Which allows to change default behavior of Context API and avoid useless rerenders. As it's experimental there are no official docs yet, check this article to get more details.
+
+`changedBits === 0` has a special handling in react-reconciler, so one of the most interesting tricks is to disable any consumer's updates:
+
+```ts
+// ☠️ Even is `value` will change updates will be silenced
+const Context = React.createContext(value, () => 0);
+```
+
+changedBits API cannot be used with useContext() hook as will produce a warning:
+
+> Warning: useContext() second argument is reserved for future use in React. Passing it is not supported. You passed: 1.
+
+The actual usage of changedBits is more complex:
+
+```ts
+const Context = React.createContext(value, (prev, next) => {
+  // 💡 This context handles only changes on `value.foo`
+  if (prev.foo !== next.foo) {
+    return 1;
+  }
+
+  // 🛎️ Will silence all other updates, i.e. they will not be propogated to context consumers
+  return 0;
+});
+
+const App = (props) => {
+  const {children} = props;
+  const {foo: 1, bar: 2} = value;
+   return (
+     <Context.Provider value={value}>{children}</Context.Provider>
+   );
+};
+
+const Consumer = (props) => {
+  // 🧱 Listen only for `1` bit changes
+  return <Context.Consumer unstable_observedBits={1}>{value => null}</Context.Consumer>
+};
+```
