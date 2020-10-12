@@ -31,4 +31,56 @@ export const Component: React.FunctionComponent = (props) => {
 };
 ```
 
+However, the run function changes the state object -- its internal field data now points to a different address. sumData captures the original address (that wasn't supposed to change), and therefore it will sum the original data.
+
+The logical step in rectifying this seems to be to make sumData capture the entire state -- since it is readonly we will be sure that we always refer to the correct address. It also seemingly makes sense not to construct a new state object in run since we only change a single field inside of it:
+
+```ts
+export const Component: React.FunctionComponent = (props) => {
+  const [state, setState] = React.useState({ data: [0, 0] });
+
+  // Assert state immutability.
+  const sumData = React.useCallback(
+    () => state.data.reduce((acc, val) => acc + val, 0),
+    [state]
+  );
+
+  const run = () => {
+    // State mutated.
+    state.data = [1, 1];
+    // Sum is in sync.
+    state.data.push(sumData());
+    state.data.push(sumData());
+    state.data.push(sumData());
+    setState(state);
+  };
+};
+```
+
+The issue with this change is that now it doesn't work at all, because React asserts that since the address of the state object hasn't changed, the object itself hasn't changed, and it will ignore the setState call. The obvious solution is to copy the object:
+
+```ts
+export const Component: React.FunctionComponent = (props) => {
+  const [state, setState] = React.useState({ data: [0, 0] });
+
+  // Assert state immutability.
+  const sumData = React.useCallback(
+    () => state.data.reduce((acc, val) => acc + val, 0),
+    [state]
+  );
+
+  const run = () => {
+    // State mutated.
+    state.data = [1, 1];
+    // Contract violation.
+    state.data.push(sumData());
+    state.data.push(sumData());
+    state.data.push(sumData());
+    setState({ ...state });
+  };
+};
+```
+
+Now the code will work. The issue with this code, however, is that it is breaking the immutability contract with React and that it is prone to error. If the state object were to consist of multiple nested fields, we would have to make sure that the object is copied properly to form a new state. Since there is no native concept of "deep copy" in javascript, doing this can be rather cumbersome:
+
 https://smykhailov.github.io/react-patterns/#/immutability
