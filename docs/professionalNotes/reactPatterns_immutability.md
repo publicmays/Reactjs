@@ -83,4 +83,41 @@ export const Component: React.FunctionComponent = (props) => {
 
 Now the code will work. The issue with this code, however, is that it is breaking the immutability contract with React and that it is prone to error. If the state object were to consist of multiple nested fields, we would have to make sure that the object is copied properly to form a new state. Since there is no native concept of "deep copy" in javascript, doing this can be rather cumbersome:
 
+```ts
+export const Component: React.FunctionComponent = (props) => {
+  const [state, setSTate] = React.useState(getCumbersomeState());
+
+  getStateString = React.useCallback(() => JSON.stringify(state), [state]);
+
+  const updateJillsStreet = () => {
+    // It is easy to get lost in this sea of spread operators and brackets.
+    setState((prevState) => ({
+      people: [
+        { ...prevState.people[0] },
+        {
+          ...prevState.people[1],
+          addresses: [
+            {
+              ...prevState.people[1].addresses[0],
+              street: `Street ${Math.random()}`,
+            },
+          ],
+        },
+      ],
+    }));
+  };
+
+  return (
+    <div className="App">
+      <div>{getStateString()}</div>
+      <div>
+        <button onClick={updateJillsStreet}>updateJillsStreet</button>
+      </div>
+    </div>
+  );
+};
+```
+
+## Immer.js to the rescue
+
 https://smykhailov.github.io/react-patterns/#/immutability
