@@ -120,4 +120,35 @@ export const Component: React.FunctionComponent = (props) => {
 
 ## Immer.js to the rescue
 
+And that is when Immer.js comes to the rescue. Immer.js uses ES6 proxies (note that when transcompiled to ES5 it will become much slower) to record changes to a so called draft object during the execution of the produce function and then project them onto a new object that becomes the new state. The draft object is based on the existing state that is passed to the produce function along with the draft callback. The following snippet demonstrates how we go from cumbersome, ugly, and ureadable to straightforward, beautiful, and well readable:
+
+```ts
+export const Component: React.FunctionComponent = (props) => {
+  const [state, setState] = React.usState(getCumbersomeState());
+
+  const getStateString = React.useCallback(() => JSON.stringify(state), [
+    state,
+  ]);
+
+  const updateJillsStreet = () => {
+    setState(
+      produce(state, _draft) => {
+        _draft.people[1].addresses[0].street = `Street ${Math.random()}`;
+      })
+    );
+  };
+
+  return (
+    <div className="App">
+      <div>{getStateString()}</div>
+      <div>
+        <button onClick={updateJillsStreet}>updateJillsStreet</button>
+      </div>
+    </div>
+  );
+};
+```
+
+This can be further simplified by using the use-immer npm package that provides us with a hook that combines the native React.useState and Immer's produce:
+
 https://smykhailov.github.io/react-patterns/#/immutability
