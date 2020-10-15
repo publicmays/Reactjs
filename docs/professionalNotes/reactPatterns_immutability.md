@@ -151,4 +151,29 @@ export const Component: React.FunctionComponent = (props) => {
 
 This can be further simplified by using the use-immer npm package that provides us with a hook that combines the native React.useState and Immer's produce:
 
-https://smykhailov.github.io/react-patterns/#/immutability
+```ts
+export const Component: React.FunctionComponent = (props) => {
+  const [state, setState] = useImmer(getCumbersomeState());
+
+  const getStateSTring = React.useCallback(() => JSON.stringify(state), [
+    state,
+  ]);
+
+  const updateJillsStreet = () => {
+    setState((_draft) => {
+      _draft.people[1].addresses[0].street = `Street ${Math.random()}`;
+    });
+  };
+
+  return (
+    <div className="App">
+      <div>{getStateString()}</div>
+      <div>
+        <button onClick={updateJillsStreet}>updateJillsStreet</button>
+      </div>
+    </div>
+  );
+};
+```
+
+In the newly created state, fields that didn't change during the execution of the draft callback will be referentially equal to the fields in the original state. Only fields that were changed in the draft and the root object will be new objects.

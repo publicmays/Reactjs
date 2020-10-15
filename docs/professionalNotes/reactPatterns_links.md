@@ -1,0 +1,16 @@
+# Useful Links
+
+## Common Topics
+
+[React JS](https://reactjs.org/docs/getting-started.html) - the official ReactJS documentation.
+[React+TypeScript Cheatsheets](https://github.com/typescript-cheatsheets/react-typescript-cheatsheet) - Cheatsheets for experienced React developers getting started with TypeScript
+[The React Cheatsheet for 2020 📄‬](https://dev.to/codeartistryio/the-react-cheatsheet-for-2020-real-world-examples-4hgg) - The React Cheatsheet for 2020 📄‬ (+ real-world examples).
+[React Patterns](https://reactpatterns.com/) - Get the latest React patterns, tips, and tricks right to your inbox.
+
+## Hooks
+
+[useEffect()](https://dev.to/n1ru4l/homebrew-react-hooks-useasynceffect-or-how-to-handle-async-operations-with-useeffect-1fa8) with async call.
+
+## Performance
+
+[How React Reconciliation Works](https://css-tricks.com/how-react-reconciliation-works/)
