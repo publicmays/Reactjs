@@ -36,3 +36,22 @@ const year = 2020;
 const greeting = <div>Hello React in {year}</div>;
 // trying to insert objects will result in an error
 ```
+
+HTML and JSX have a slightly different syntax
+
+```ts
+// Empty div is not <div></div> (HTML), but <div/> (JSX)
+<div/>
+
+// A single tag element like input is not <input> (HTML), but <input/> (JSX)
+<input name="email" />
+
+// Attributes are written in camelcase for JSX (like JS variables
+<button className="submit-button"></button> // not 'class' (HTML)
+```
+
+The most basic React app requires three things:
+
+1. ReactDOM.render() to render our app
+2. A JSX element (called a root node in this context)
+3. A DOM element within which to mount the app (usually a div with an id of root in an index.html file)
