@@ -1,5 +1,3 @@
-https://dev.to/codeartistryio/the-react-cheatsheet-for-2020-real-world-examples-4hgg
-
 # Elements and JSX
 
 The basic syntax for a React element
@@ -55,3 +53,14 @@ The most basic React app requires three things:
 1. ReactDOM.render() to render our app
 2. A JSX element (called a root node in this context)
 3. A DOM element within which to mount the app (usually a div with an id of root in an index.html file)
+
+```ts
+// imports needed if using NPM package; not if from CDN links
+import React from "react";
+import ReactDOM from "react-dom";
+
+const greeting = <h1>Hello React</h1>;
+
+// ReactDOM.render(root node, mounting point)
+ReactDOM.render(greeting, document.getElementById("root"));
+```
