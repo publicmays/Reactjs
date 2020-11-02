@@ -138,3 +138,23 @@ function AboutPage() {
 ```
 
 Conditionally displaying components with ternaries and short-circuiting
+
+```ts
+// if-statements are fine to conditionally show , however...
+// ...only ternaries (seen below) allow us to insert these conditionals
+// in JSX, however
+function Header() {
+  const isAuthenticated = checkAuth();
+
+  return (
+    <nav>
+      <Logo />
+      {isAuthenticated ? <AuthLinks /> : <Login />}
+      {isAuthenticated && <Greeting />}
+    </nav>
+  );
+}
+```
+
+Fragments are special components for displaying multiple components without adding an extra element to the DOM
+Fragments are ideal for conditional logic
