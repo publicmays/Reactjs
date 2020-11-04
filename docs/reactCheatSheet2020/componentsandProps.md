@@ -1,5 +1,3 @@
-https://dev.to/codeartistryio/the-react-cheatsheet-for-2020-real-world-examples-4hgg
-
 # Components and Props
 
 - The syntax for a basic React component
@@ -158,3 +156,24 @@ function Header() {
 
 Fragments are special components for displaying multiple components without adding an extra element to the DOM
 Fragments are ideal for conditional logic
+
+```ts
+// we can improve the logic in the previous example
+// if isAuthenticated is true, how do we display both AuthLinks and Greeting?
+function Header() {
+  const isAuthenticated = checkAuth();
+  return (
+    <nav>
+      <Logo />
+      {/* we can render both components with a fragment */}
+      {/* fragments are very concise: <> </> */}
+      { isAuthenicated ? (
+        <>
+          <AuthLinks>
+          <Greeting />
+        </>
+      ) : (<Login />)}
+    </nav>
+  );
+}
+```
