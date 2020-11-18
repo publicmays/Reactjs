@@ -53,3 +53,27 @@ function App() {
 ```
 
 useState can be used once or multiple times within a single component
+
+```ts
+function App() {
+  const [language, setLanguage] = React.useState("python");
+  const [yearsExperience, setYearsExperience] = React.useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setLanguage("javascript")}>
+        Change language to JS
+      </button>
+      <input
+        type="number"
+        value={yearsExperience}
+        onChange={(event) => setYearsExperience(event.target.vaulue)}
+      />
+      <p>I am now learning {language}</p>
+      <p>I have {yearsExperience} years of experience</p>
+    </div>
+  );
+}
+```
+
+useState can accept primitive or object values to manage state
