@@ -1,5 +1,3 @@
-https://dev.to/codeartistryio/the-react-cheatsheet-for-2020-real-world-examples-4hgg#state-and-usestate
-
 # State and useState
 
 useState gives us local state in a function component
@@ -117,3 +115,26 @@ function App() {
 ```
 
 If the new state depends on the previous state, to guarantee the update is done reliably, we can use a function within the setter function that gives us the correct previous state
+
+```ts
+function App() {
+  const [developer, setDeveloper] = React.useState({
+    language: "",
+    yearsExperience: 0,
+    isEmployed: false,
+  });
+
+  function handleToggleEmployment(event) {
+    // we get the previous state variable's value in the parameters
+    // we can name 'prevState' however we like
+    setDeveloper((prevState) => {
+      return { ...prevState, isEmployed: !prevState.isEmployed };
+      // it is essential to return the new state from this function
+    });
+  }
+
+  return (
+    <button onClick={handleToggleEmployment}>Toggle Employment Status</button>
+  );
+}
+```
