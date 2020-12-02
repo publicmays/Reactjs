@@ -1,5 +1,3 @@
-https://dev.to/codeartistryio/the-react-cheatsheet-for-2020-real-world-examples-4hgg#side-effects-and-useeffect
-
 # Side effects and useEffect
 
 useEffect lets us perform side effects in function components. What are side effects?
@@ -115,3 +113,34 @@ function MouseTracker() {
 
 Fetching data with useEffect
 Note that handling promises with the more concise async/await syntax requires creating a separate function (Why? The effect callback function cannot be async)
+
+```ts
+const endpoint = "https://api.github.com/users/codeartistryio";
+
+// with promises:
+function App() {
+  const [user, setUser] = React.useState(null);
+  React.useEffect(() => {
+    // promises work in callback
+    fetch(endpoint)
+      .then((response) => response.json())
+      .then((data) => setUser(data));
+  }, []);
+}
+
+// with async / await syntax for promise
+function App() {
+  const [user, setUser] = React.useState(null);
+  React.useEffect(() => {
+    getUser();
+  }, []);
+}
+
+// instead, use async / await in separate function, then call
+// function back in useEffect
+async function getUser() {
+  const response = await fetch(endpoint);
+  const data = await response.json();
+  setUser(data);
+}
+```
