@@ -1,5 +1,3 @@
-https://dev.to/codeartistryio/the-react-cheatsheet-for-2020-real-world-examples-4hgg#context-and-usecontext
-
 # Context and useContext
 
 In React, we want to avoid the following problem of creating multiple props to pass data down two or more levels from a parent component
@@ -67,3 +65,12 @@ const Header = () => (
 ```
 
 The useContext hook can remove this unusual-looking render props pattern, however to be able to consume context in whatever function component we like
+
+```ts
+const Header = () => {
+  // we pass in the entire context object to consume it
+  const user = React.useContext(UserContext);
+  // and we can remove the Consumer tags
+  return <header>Welcome, {user.name}!</header>;
+};
+```
