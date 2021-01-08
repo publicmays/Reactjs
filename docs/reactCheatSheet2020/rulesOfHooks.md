@@ -21,6 +21,7 @@ function App() {
   // this is the only validly executed hook in this component
   const [user, setUser] = React.useState(null);
 
+  // Rule 1 violated! Hooks cannot be used within conditionals (or loops
   if (!user) {
     React.useEffect(() => {
       setUser({ isAuth: false });
