@@ -1,5 +1,3 @@
-https://dev.to/reedbarger/the-react-cheatsheet-for-2020-real-world-examples-4hgg#rules-of-hooks
-
 # Rules of hooks
 
 There are two core rules of using React hooks that we cannot violate for them to work properly:
